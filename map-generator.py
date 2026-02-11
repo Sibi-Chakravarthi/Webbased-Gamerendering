@@ -11,15 +11,15 @@ class MapGenerator:
 
     def do_job(self):
         self.generate_base_map()
-        self.generate_base_branch(branch_thickness = 8)
+        self.generate_base_branch(branch_thickness = 9)
         self.rectangularize_branch()
 
     def generate_base_branch(self,branch_thickness):
-        start_col = random.randint(1, self.map_size - 2)
-        exit_col = random.randint(1, self.map_size - 2)
-        row, col = 0, start_col
-        starting_thickness = branch_thickness//3
+        starting_thickness = branch_thickness//2
         chance = 0.005
+        start_col = random.randint(1 + starting_thickness, self.map_size - 2 - starting_thickness)
+        exit_col = random.randint(1 + branch_thickness, self.map_size - 2 - branch_thickness)
+        row, col = 0, start_col
 
         while row < self.map_size - 1:
 
@@ -34,10 +34,10 @@ class MapGenerator:
             if starting_thickness < branch_thickness:
                 if random.random() < chance: 
                     starting_thickness += 1
-            if col >= self.map_size//2:
+            if col >= self.map_size//4:
                 chance = 0.01
             if col >= (self.map_size*3)//4:
-                chance = 0.1
+                chance = 0.5
 
             moves = []
             moves.append((row + 1, col))
@@ -70,6 +70,6 @@ class MapGenerator:
         for row in self.map:
             print(" ".join(str(c) for c in row))
 
-m = MapGenerator(map_size=100, num_rooms=5)
+m = MapGenerator(map_size=123, num_rooms=5)
 m.do_job()
 m.print_map()
