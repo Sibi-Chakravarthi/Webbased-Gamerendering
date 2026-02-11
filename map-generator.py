@@ -16,12 +16,8 @@ class MapGenerator:
     def generate_base_branch(self):
         start_col = random.randint(1, self.map_size - 2)
         exit_col = random.randint(1, self.map_size - 2)
-
-        # place start and exit
-        self.map[0][start_col] = 2
-        self.map[self.map_size - 1][exit_col] = 3
-
         row, col = 0, start_col
+
         while row < self.map_size - 1:
             self.map[row][col] = 1
             moves = []
@@ -35,12 +31,14 @@ class MapGenerator:
             elif col > exit_col and col > 1:
                 moves.append((row, col - 1))
             row, col = random.choice(moves)
+
         while col != exit_col:
             self.map[row][col] = 1
             if col < exit_col:
                 col += 1
             else:
                 col -= 1
+
         self.map[0][start_col] = 2
         self.map[row][col] = 3
 
@@ -48,8 +46,6 @@ class MapGenerator:
         for row in self.map:
             print(" ".join(str(c) for c in row))
 
-
-# run
 m = MapGenerator(map_size=20, num_rooms=5)
 m.do_job()
 m.print_map()
