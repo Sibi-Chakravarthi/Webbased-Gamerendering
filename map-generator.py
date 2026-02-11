@@ -11,21 +11,42 @@ class MapGenerator:
 
     def do_job(self):
         self.generate_base_map()
-        self.generate_base_branch()
+        self.generate_base_branch(branch_thickness = 8)
+        self.rectangularize_branch()
 
-    def generate_base_branch(self):
+    def generate_base_branch(self,branch_thickness):
         start_col = random.randint(1, self.map_size - 2)
         exit_col = random.randint(1, self.map_size - 2)
         row, col = 0, start_col
+        starting_thickness = branch_thickness//3
+        chance = 0.005
 
         while row < self.map_size - 1:
-            self.map[row][col] = 1
+
+            for r in range(starting_thickness):
+                for c in range(starting_thickness):
+                    draw_r = row + r
+                    draw_c = col + c
+                    
+                    if draw_r < self.map_size and draw_c < self.map_size:
+                        self.map[draw_r][draw_c] = 1
+
+            if starting_thickness < branch_thickness:
+                if random.random() < chance: 
+                    starting_thickness += 1
+            if col >= self.map_size//2:
+                chance = 0.01
+            if col >= (self.map_size*3)//4:
+                chance = 0.1
+
             moves = []
             moves.append((row + 1, col))
+            print(starting_thickness) 
+            
             if col > 1:
-                moves.append((row, col - 1))
+                moves.append((row, col - 1)) 
             if col < self.map_size - 2:
-                moves.append((row, col + 1))
+                moves.append((row, col + 1)) 
             if col < exit_col and col < self.map_size - 2:
                 moves.append((row, col + 1))
             elif col > exit_col and col > 1:
@@ -40,12 +61,15 @@ class MapGenerator:
                 col -= 1
 
         self.map[0][start_col] = 2
-        self.map[row][col] = 3
+        self.map[self.map_size-1][exit_col] = 3
 
+    def rectangularize_branch(self):
+        print()
+    
     def print_map(self):
         for row in self.map:
             print(" ".join(str(c) for c in row))
 
-m = MapGenerator(map_size=20, num_rooms=5)
+m = MapGenerator(map_size=100, num_rooms=5)
 m.do_job()
 m.print_map()
