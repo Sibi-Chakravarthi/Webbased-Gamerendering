@@ -19,7 +19,7 @@ public class Raycaster{
     double posX = 4.5;
     double posY = 4.5;
     
-    double dirX = -1.0;
+    double dirX = 1.0;
     double dirY = 0.0;
 
     double planeX = 0.0;
@@ -31,7 +31,9 @@ public class Raycaster{
     int stepX;
     int stepY;
 
-    public void castRays(){
+    public int[][] castRays(){
+
+        int[][] rayData = new int[screenwidth][3]; 
 
         for (int x = 0; x < screenwidth ; x++){
         
@@ -109,18 +111,46 @@ public class Raycaster{
             if (drawEnd >= screenHeight) {
                 drawEnd = screenHeight - 1;
             }
+            rayData[x][0] = drawStart;
+            rayData[x][1] = drawEnd;
+            rayData[x][2] = side;
+        }
+        return rayData;
+    }
 
-            if (x == 320) {
-                System.out.println("Ray 320 | Dist: " + perpWallDist + " | Draw Wall from Y: " + drawStart + " to Y: " + drawEnd);
+    public String toJSON(int[][] data){
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+
+        for (int i = 0;i < data.length;i++){
+
+            sb.append("[")
+              .append(data[i][0]).append(",")
+              .append(data[i][1]).append(",")
+              .append(data[i][2])
+              .append("]");
+
+            if (i < data.length - 1){
+                sb.append(",");
             }
         }
+        
+        sb.append(']');
+
+        return sb.toString();
     }
+
 
     public static void main(String args[]){
         
         Raycaster engine = new Raycaster();
-        engine.castRays();
-    
-    }
 
+        int[][] frameData = engine.castRays();
+
+        String jsonString = engine.toJSON(frameData);
+
+        System.out.println(jsonString);
+        
+    }
 }
