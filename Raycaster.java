@@ -13,9 +13,10 @@ public class Raycaster{
         {1,1,1,1,1,1,1,1,1,1}
     };
 
+    int screenHeight = 480;
     int screenwidth = 640;
 
-    double posX = 3.5;
+    double posX = 4.5;
     double posY = 4.5;
     
     double dirX = -1.0;
@@ -81,6 +82,36 @@ public class Raycaster{
                 if (worldMap[mapX][mapY] > 0) {
                     hit = 1;
                 }
+            }
+                        
+            double perpWallDist;
+
+            if (side == 0){
+
+                perpWallDist = (mapX - posX + (1 - stepX) / 2.0) / rayDirX;
+
+            } else {
+
+                perpWallDist = (mapY - posY + (1 - stepY) / 2.0) / rayDirY;
+
+            }
+
+            double lineHeight = screenHeight / perpWallDist;
+
+            int drawStart = (int) -lineHeight / 2 + screenHeight / 2;
+            
+            if (drawStart < 0) {
+                drawStart = 0;
+            }
+
+            int drawEnd = (int) lineHeight / 2 + screenHeight / 2;
+            
+            if (drawEnd >= screenHeight) {
+                drawEnd = screenHeight - 1;
+            }
+
+            if (x == 320) {
+                System.out.println("Ray 320 | Dist: " + perpWallDist + " | Draw Wall from Y: " + drawStart + " to Y: " + drawEnd);
             }
         }
     }
