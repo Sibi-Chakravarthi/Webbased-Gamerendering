@@ -19,8 +19,8 @@ public class Raycaster{
     double posX = 4.5;
     double posY = 4.5;
     
-    double dirX = 1.0;
-    double dirY = 0.0;
+    double dirX = 0.0;
+    double dirY = -1.0;
 
     double planeX = 0.0;
     double planeY = 0.66;
