@@ -140,17 +140,4 @@ public class Raycaster{
 
         return sb.toString();
     }
-
-
-    public static void main(String args[]){
-        
-        Raycaster engine = new Raycaster();
-
-        int[][] frameData = engine.castRays();
-
-        String jsonString = engine.toJSON(frameData);
-
-        System.out.println(jsonString);
-        
-    }
 }
