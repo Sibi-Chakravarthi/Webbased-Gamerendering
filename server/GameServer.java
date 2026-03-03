@@ -17,10 +17,36 @@ public class GameServer {
 
     }
 
+    private boolean getQueryParam(String query, String key) {
+            if (query == null) return false;
+            String[] params = query.split("&");
+
+            for (String param : params) {
+
+                String[] pair = param.split("=");
+
+                if (pair.length == 2 && pair[0].equals(key)) {
+
+                    return Boolean.parseBoolean(pair[1]);
+
+                }
+            }
+            return false;
+        }
+
     @Override
     public void handle(HttpExchange t) throws IOException{
 
         t.getResponseHeaders().add("Access-Control-Allow-Origin","*");
+
+        String query = t.getRequestURI().getQuery();
+
+        boolean w = getQueryParam(query, "w");
+        boolean a = getQueryParam(query, "a");
+        boolean s = getQueryParam(query, "s");
+        boolean d = getQueryParam(query, "d");
+
+        engine.player.move(w, a, s, d, engine.worldMap);
 
         int[][] frameData = engine.castRays();
         String response = engine.toJSON(frameData);

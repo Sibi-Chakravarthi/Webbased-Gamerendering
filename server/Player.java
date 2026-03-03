@@ -21,20 +21,30 @@ public class Player{
 
     }
 
-    public void move(boolean w,boolean a,boolean s,boolean d){
+    public void move(boolean w,boolean a,boolean s,boolean d,int[][] worldMap){
 
-        if (w){
+        double radius = 0.25;
 
-            posX += dirX * moveSpeed;
-            posY += dirY * moveSpeed;
+        if (w) {
 
+            if (worldMap[(int)(posX + dirX * moveSpeed + Math.signum(dirX) * radius)][(int)posY] == 0) {
+                posX += dirX * moveSpeed;
+            }
+
+            if (worldMap[(int)posX][(int)(posY + dirY * moveSpeed + Math.signum(dirY) * radius)] == 0) {
+                posY += dirY * moveSpeed;
+            }
         }
 
-        if (s){
+        if (s) {
 
-            posX -= dirX * moveSpeed;
-            posY -= dirY * moveSpeed;
+            if (worldMap[(int)(posX - dirX * moveSpeed - Math.signum(dirX) * radius)][(int)posY] == 0) {
+                posX -= dirX * moveSpeed;
+            }
 
+            if (worldMap[(int)posX][(int)(posY - dirY * moveSpeed - Math.signum(dirY) * radius)] == 0) {
+                posY -= dirY * moveSpeed;
+            }
         }
 
         if (a){

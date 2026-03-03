@@ -35,7 +35,7 @@ async function getFrameFromJava() {
     try {
     
         const url = `http://localhost:8080/frame?w=${keys.w}&a=${keys.a}&s=${keys.s}&d=${keys.d}`;
-        const response = await fetch("http://localhost:8080/frame");
+        const response = await fetch(url);
         const rayData = await response.json(); 
 
         draw3DWorld(rayData);
