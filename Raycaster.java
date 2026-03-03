@@ -16,20 +16,17 @@ public class Raycaster{
     int screenHeight = 480;
     int screenwidth = 640;
 
-    double posX = 4.5;
-    double posY = 4.5;
-    
-    double dirX = 0.0;
-    double dirY = -1.0;
-
-    double planeX = 0.0;
-    double planeY = 0.66;
-
     double sideDistX;
     double sideDistY;
     
     int stepX;
     int stepY;
+
+    public Player player;
+
+    public Raycaster() {
+        this.player = new Player(2.5, 2.5, -1, 0, 0, 0.66);
+    }
 
     public int[][] castRays(){
 
@@ -39,29 +36,29 @@ public class Raycaster{
         
             double cameraX = (2.0 * x /screenwidth) - 1;
             
-            double rayDirX = dirX + planeX * cameraX;
-            double rayDirY = dirY + planeY * cameraX;
+            double rayDirX = player.dirX + player.planeX * cameraX;
+            double rayDirY = player.dirY + player.planeY * cameraX;
             
-            int mapX = (int) posX;
-            int mapY = (int) posY;
+            int mapX = (int) player.posX;
+            int mapY = (int) player.posY;
 
             double deltaDistX = Math.abs(1/rayDirX);
             double deltaDistY = Math.abs(1/rayDirY);
 
             if (rayDirX < 0){
                 stepX = -1;
-                sideDistX = (posX - mapX) * deltaDistX;
+                sideDistX = (player.posX - mapX) * deltaDistX;
             } else {
                 stepX = 1;
-                sideDistX = (mapX + 1 - posX) * deltaDistX;
+                sideDistX = (mapX + 1 - player.posX) * deltaDistX;
             }
 
             if (rayDirY < 0){
                 stepY = -1;
-                sideDistY = (posY - mapY) * deltaDistY;
+                sideDistY = (player.posY - mapY) * deltaDistY;
             } else {
                 stepY = 1;
-                sideDistY = (mapY + 1 - posY) * deltaDistY;
+                sideDistY = (mapY + 1 - player.posY) * deltaDistY;
             }
 
             int hit = 0;
@@ -90,11 +87,11 @@ public class Raycaster{
 
             if (side == 0){
 
-                perpWallDist = (mapX - posX + (1 - stepX) / 2.0) / rayDirX;
+                perpWallDist = (mapX - player.posX + (1 - stepX) / 2.0) / rayDirX;
 
             } else {
 
-                perpWallDist = (mapY - posY + (1 - stepY) / 2.0) / rayDirY;
+                perpWallDist = (mapY - player.posY + (1 - stepY) / 2.0) / rayDirY;
 
             }
 
