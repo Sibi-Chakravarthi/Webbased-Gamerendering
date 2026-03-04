@@ -123,5 +123,4 @@ class MapGenerator:
 
 m = MapGenerator(map_size=100, num_rooms=5)
 m.do_job()
-m.print_map()
 m.export_to_json()

@@ -25,12 +25,10 @@ public class Player{
         int gridX = (int) targetX;
         int gridY = (int) targetY;
         
-        // If it's outside the array, treat it as a solid wall (return false)
         if (gridX < 0 || gridX >= worldMap.length || gridY < 0 || gridY >= worldMap[0].length) {
             return false;
         }
         
-        // Otherwise, check if the space is a 0
         return worldMap[gridX][gridY] == 0;
     }
 

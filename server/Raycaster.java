@@ -23,7 +23,7 @@ public class Raycaster{
 
     public int[][] castRays(Player player, int[][] worldMap){
 
-        int[][] rayData = new int[screenwidth][3]; 
+        int[][] rayData = new int[screenwidth][4]; 
 
         for (int x = 0; x < screenwidth ; x++){
         
@@ -77,7 +77,7 @@ public class Raycaster{
                 }
 
                 if (worldMap[mapX][mapY] > 0) {
-                    hit = 1;
+                    hit = worldMap[mapX][mapY];
                 }
             }
                         
@@ -109,6 +109,7 @@ public class Raycaster{
             rayData[x][0] = drawStart;
             rayData[x][1] = drawEnd;
             rayData[x][2] = side;
+            rayData[x][3] = hit;
         }
         return rayData;
     }
@@ -123,7 +124,8 @@ public class Raycaster{
             sb.append("[")
               .append(data[i][0]).append(",")
               .append(data[i][1]).append(",")
-              .append(data[i][2])
+              .append(data[i][2]).append(",")
+              .append(data[i][3])
               .append("]");
 
             if (i < data.length - 1){

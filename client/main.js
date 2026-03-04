@@ -64,13 +64,16 @@ function draw3DWorld(rayData) {
         let drawStart = rayData[x][0];
         let drawEnd = rayData[x][1];
         let side = rayData[x][2];
+        let wallType = rayData[x][3];
 
         let lineHeight = drawEnd - drawStart;
 
-        if (side === 0) {
-            ctx.fillStyle = "#cc0000"; 
+        if (wallType === 2) {
+            ctx.fillStyle = (side === 0) ? "#00ff00" : "#00aa00"; // Entry (Green)
+        } else if (wallType === 3) {
+            ctx.fillStyle = (side === 0) ? "#0000ff" : "#0000aa"; // Exit (Blue)
         } else {
-            ctx.fillStyle = "#770000"; 
+            ctx.fillStyle = (side === 0) ? "#cc0000" : "#770000"; // Normal Wall (Red)
         }
 
         ctx.fillRect(x, drawStart, 1, lineHeight); 

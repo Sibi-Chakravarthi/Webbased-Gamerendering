@@ -22,9 +22,24 @@ public class MapLoader {
             int[][] map = new int[numRows][numCols];
 
             for (int i = 0; i < numRows; i++) {
+
                 String[] stringCols = stringRows[i].split(",");
+
                 for (int j = 0; j < numCols; j++) {
                     map[i][j] = Integer.parseInt(stringCols[j]);
+                }
+            }
+
+            for (int x = 0; x < numRows; x++) {
+
+                for (int y = 0; y < numCols; y++) {
+
+                    if (x == 0 || x == numRows - 1 || y == 0 || y == numCols - 1) {
+                        
+                        if (map[x][y] != 2 && map[x][y] != 3) {
+                            map[x][y] = 1;
+                        }
+                    }
                 }
             }
             
@@ -32,11 +47,15 @@ public class MapLoader {
             return map;
 
         } catch (IOException e) {
+
             System.out.println("❌ Could not find the file: " + filePath);
             e.printStackTrace();
+
         } catch (Exception e) {
+
             System.out.println("❌ Error parsing the map data!");
             e.printStackTrace();
+
         }
         
         return null;
