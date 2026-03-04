@@ -1,17 +1,6 @@
 public class Raycaster{
 
-    int[][] worldMap = {
-        {1,1,1,1,1,1,1,1,1,1},
-        {1,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,0,0,0,0,0,1},
-        {1,0,0,1,1,0,0,0,0,1},
-        {1,0,0,1,0,0,0,0,0,1},
-        {1,0,0,0,0,0,1,0,0,1},
-        {1,0,0,0,0,0,1,0,0,1},
-        {1,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,0,0,0,0,0,1},
-        {1,1,1,1,1,1,1,1,1,1}
-    };
+    int[][] worldMap;
 
     int screenHeight = 480;
     int screenwidth = 640;
@@ -25,10 +14,14 @@ public class Raycaster{
     public Player player;
 
     public Raycaster() {
-        this.player = new Player(2.5, 2.5, -1, 0, 0, 0.66);
+
+        this.worldMap = MapLoader.loadMap("map.json");
+
+        this.player = new Player(50.5, 50.5, -1, 0, 0, 0.66);
+
     }
 
-    public int[][] castRays(){
+    public int[][] castRays(Player player, int[][] worldMap){
 
         int[][] rayData = new int[screenwidth][3]; 
 
@@ -76,6 +69,11 @@ public class Raycaster{
                     sideDistY = sideDistY + deltaDistY;
                     mapY += stepY;
                     side = 1;
+                }
+
+                if (mapX < 0 || mapX >= worldMap.length || mapY < 0 || mapY >= worldMap[0].length) {
+                    hit = 1;
+                    break;
                 }
 
                 if (worldMap[mapX][mapY] > 0) {

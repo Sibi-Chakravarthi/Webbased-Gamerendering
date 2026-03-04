@@ -9,11 +9,11 @@ public class GameServer {
 
     static class FrameHandler implements HttpHandler{
 
-        private Raycaster engine;
+        private GameEngine game;
 
-        public FrameHandler(Raycaster engine){
+        public FrameHandler(GameEngine engine){
 
-            this.engine = engine;
+            this.game = engine;
 
     }
 
@@ -35,39 +35,32 @@ public class GameServer {
         }
 
     @Override
-    public void handle(HttpExchange t) throws IOException{
+        public void handle(HttpExchange t) throws IOException {
+            t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+            String query = t.getRequestURI().getQuery();
 
-        t.getResponseHeaders().add("Access-Control-Allow-Origin","*");
+            boolean w = getQueryParam(query, "w");
+            boolean a = getQueryParam(query, "a");
+            boolean s = getQueryParam(query, "s");
+            boolean d = getQueryParam(query, "d");
 
-        String query = t.getRequestURI().getQuery();
+            String response = game.tick(w, a, s, d);
 
-        boolean w = getQueryParam(query, "w");
-        boolean a = getQueryParam(query, "a");
-        boolean s = getQueryParam(query, "s");
-        boolean d = getQueryParam(query, "d");
-
-        engine.player.move(w, a, s, d, engine.worldMap);
-
-        int[][] frameData = engine.castRays();
-        String response = engine.toJSON(frameData);
-
-        t.sendResponseHeaders(200, response.length());
-        OutputStream os = t.getResponseBody();
-
-        os.write(response.getBytes());
-        os.close();
-
+            t.sendResponseHeaders(200, response.length());
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
         }
-
     }
+
 
     public static void main(String args[]) throws Exception{
         
-        Raycaster engine = new Raycaster();
+        GameEngine game = new GameEngine();
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8080),0);
 
-        server.createContext("/frame",new FrameHandler(engine));
+        server.createContext("/frame", new FrameHandler(game));
 
         server.setExecutor(null);
         server.start();

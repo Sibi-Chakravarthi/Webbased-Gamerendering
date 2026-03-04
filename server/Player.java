@@ -21,28 +21,37 @@ public class Player{
 
     }
 
+    private boolean isWalkable(int[][] worldMap, double targetX, double targetY) {
+        int gridX = (int) targetX;
+        int gridY = (int) targetY;
+        
+        // If it's outside the array, treat it as a solid wall (return false)
+        if (gridX < 0 || gridX >= worldMap.length || gridY < 0 || gridY >= worldMap[0].length) {
+            return false;
+        }
+        
+        // Otherwise, check if the space is a 0
+        return worldMap[gridX][gridY] == 0;
+    }
+
     public void move(boolean w,boolean a,boolean s,boolean d,int[][] worldMap){
 
         double radius = 0.25;
 
         if (w) {
-
-            if (worldMap[(int)(posX + dirX * moveSpeed + Math.signum(dirX) * radius)][(int)posY] == 0) {
+            if (isWalkable(worldMap, posX + dirX * moveSpeed + Math.signum(dirX) * radius, posY)) {
                 posX += dirX * moveSpeed;
             }
-
-            if (worldMap[(int)posX][(int)(posY + dirY * moveSpeed + Math.signum(dirY) * radius)] == 0) {
+            if (isWalkable(worldMap, posX, posY + dirY * moveSpeed + Math.signum(dirY) * radius)) {
                 posY += dirY * moveSpeed;
             }
         }
 
         if (s) {
-
-            if (worldMap[(int)(posX - dirX * moveSpeed - Math.signum(dirX) * radius)][(int)posY] == 0) {
+            if (isWalkable(worldMap, posX - dirX * moveSpeed - Math.signum(dirX) * radius, posY)) {
                 posX -= dirX * moveSpeed;
             }
-
-            if (worldMap[(int)posX][(int)(posY - dirY * moveSpeed - Math.signum(dirY) * radius)] == 0) {
+            if (isWalkable(worldMap, posX, posY - dirY * moveSpeed - Math.signum(dirY) * radius)) {
                 posY -= dirY * moveSpeed;
             }
         }
