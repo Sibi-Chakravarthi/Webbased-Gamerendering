@@ -7,8 +7,8 @@ public class Player{
     public double planeX;
     public double planeY;
 
-    private double moveSpeed = 0.08; 
-    private double rotSpeed = 0.05;
+    private double baseMoveSpeed = 5.0; 
+    private double baseRotSpeed = 3.0;
 
     public Player(double startX ,double startY, double startDirX,double startDirY,double startPlaneX,double startPlaneY){
 
@@ -32,8 +32,11 @@ public class Player{
         return worldMap[gridX][gridY] == 0;
     }
 
-    public void move(boolean w,boolean a,boolean s,boolean d,int[][] worldMap){
+    public void move(boolean w,boolean a,boolean s,boolean d,int[][] worldMap , double deltaTime){
 
+        double moveSpeed = baseMoveSpeed * deltaTime;
+        double rotSpeed = baseRotSpeed * deltaTime;
+        
         double radius = 0.25;
 
         if (w) {

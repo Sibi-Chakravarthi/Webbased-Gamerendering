@@ -3,6 +3,8 @@ public class GameEngine {
     public int[][] worldMap;
     public Player player;
     public Raycaster raycaster;
+    public double deltaTime;
+    private long lastTime;
 
     public GameEngine() {
         
@@ -39,6 +41,7 @@ public class GameEngine {
 
         this.player = new Player(spawnX, spawnY, -1, 0, 0, 0.66);
         this.raycaster = new Raycaster();
+        this.lastTime = System.nanoTime();
     }
 
     private void generateNewMap() {
@@ -62,7 +65,12 @@ public class GameEngine {
 
     public String tick(boolean w, boolean a, boolean s, boolean d) {
 
-        player.move(w, a, s, d, worldMap);
+        long currentTime = System.nanoTime();
+        double deltaTime = (currentTime - lastTime) / 1000000000.0;
+        this.lastTime = currentTime;
+
+
+        player.move(w, a, s, d, worldMap, deltaTime);
 
         int[][] frameData = raycaster.castRays(player, worldMap);
 
