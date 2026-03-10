@@ -114,13 +114,15 @@ public class Raycaster{
         return rayData;
     }
 
-    public String toJSON(int[][] data){
+    public String toJSON(int[][] data,Player player){
 
         StringBuilder sb = new StringBuilder();
-        sb.append("[");
 
-        for (int i = 0;i < data.length;i++){
+        sb.append("{\"x\":").append(player.posX)
+          .append(",\"y\":").append(player.posY)
+          .append(",\"frame\":[");
 
+        for (int i = 0; i < data.length; i++) {
             sb.append("[")
               .append(data[i][0]).append(",")
               .append(data[i][1]).append(",")
@@ -128,12 +130,12 @@ public class Raycaster{
               .append(data[i][3])
               .append("]");
 
-            if (i < data.length - 1){
+            if (i < data.length - 1) {
                 sb.append(",");
             }
         }
         
-        sb.append(']');
+        sb.append("]}");
 
         return sb.toString();
     }
