@@ -3,7 +3,7 @@ public class Raycaster{
     int[][] worldMap;
 
     public int screenHeight = 1080;
-    public int screenwidth = 1920;
+    public int screenWidth = 1920;
 
     double sideDistX;
     double sideDistY;
@@ -13,7 +13,10 @@ public class Raycaster{
 
     public Player player;
 
+    public double[] zBuffer;
+
     private int[][] rayData;
+
 
     public Raycaster() {
 
@@ -21,17 +24,17 @@ public class Raycaster{
 
         this.player = new Player(50.5, 50.5, -1, 0, 0, 0.66);
 
-        this.rayData = new int[screenwidth][4];
+        this.rayData = new int[screenWidth][4];
+
+        this.zBuffer = new double[screenWidth];
 
     }
 
     public int[][] castRays(Player player, int[][] worldMap){
 
-        int[][] rayData = new int[screenwidth][4]; 
-
-        for (int x = 0; x < screenwidth ; x++){
+        for (int x = 0; x < screenWidth ; x++){
         
-            double cameraX = (2.0 * x /screenwidth) - 1;
+            double cameraX = (2.0 * x /screenWidth) - 1;
             
             double rayDirX = player.dirX + player.planeX * cameraX;
             double rayDirY = player.dirY + player.planeY * cameraX;
@@ -98,6 +101,8 @@ public class Raycaster{
             }
 
             perpWallDist = Math.max(0.0001, Math.abs(perpWallDist));
+
+            this.zBuffer[x] = perpWallDist;
 
             double lineHeight = screenHeight / perpWallDist;
 
