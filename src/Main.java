@@ -1,6 +1,5 @@
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -23,25 +22,25 @@ public class Main extends JPanel implements Runnable , KeyListener {
 
     private boolean w , a , s , d;
 
-    public Main(){
-
+    public Main() {
         engine = new GameEngine();
 
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
-        frame = new JFrame("Raycaster Game Engine");
-        frame.setSize(1920, 1080);
+        frame = new JFrame("RayForge Engine");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
 
+        this.setPreferredSize(new java.awt.Dimension(WIDTH, HEIGHT));
         frame.add(this);
+        frame.pack(); 
+        
+        frame.setLocationRelativeTo(null);
         frame.addKeyListener(this);
         frame.setVisible(true);
 
         startThread();
-
     }
 
     private synchronized void startThread() {
@@ -54,10 +53,8 @@ public class Main extends JPanel implements Runnable , KeyListener {
     public void run() {
         while (isRunning) {
             currentFrame = engine.tick(w, a, s, d);
-            
-            // 1. Color the pixels in RAM
+
             renderToBuffer(); 
-            // 2. Slap the image onto the screen
             repaint(); 
 
             try {

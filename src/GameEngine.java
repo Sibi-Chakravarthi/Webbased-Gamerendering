@@ -25,21 +25,18 @@ public class GameEngine {
 
         double spawnX = 2.5; 
         double spawnY = 2.5;
-        boolean foundSpawn = false;
 
-        for (int x = 1; x < worldMap.length - 1; x++) {
-            for (int y = 1; y < worldMap[x].length - 1; y++) {
-                if (worldMap[x][y] == 0) {
-                    spawnX = x + 0.5; 
+        for (int x = 0; x < worldMap.length; x++) {
+            for (int y = 0; y < worldMap[x].length; y++) {
+                if (worldMap[x][y] == 2) {
+                    spawnX = x + 1.5; 
                     spawnY = y + 0.5;
-                    foundSpawn = true;
                     break;
                 }
             }
-            if (foundSpawn) break;
         }
 
-        this.player = new Player(spawnX, spawnY, -1, 0, 0, 0.66);
+        this.player = new Player(spawnX, spawnY, 1, 0, 0, -0.66);
         this.raycaster = new Raycaster();
         this.lastTime = System.nanoTime();
     }

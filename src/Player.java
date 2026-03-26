@@ -1,7 +1,5 @@
-public class Player{
+public class Player extends Entity{
     
-    public double posX;
-    public double posY;
     public double dirX;
     public double dirY;
     public double planeX;
@@ -10,26 +8,12 @@ public class Player{
     private double baseMoveSpeed = 5.0; 
     private double baseRotSpeed = 3.0;
 
-    public Player(double startX ,double startY, double startDirX,double startDirY,double startPlaneX,double startPlaneY){
-
-        this.posX = startX;
-        this.posY = startY;
+    public Player(double startX, double startY, double startDirX, double startDirY, double startPlaneX, double startPlaneY) {
+        super(startX, startY); // This handles the coordinates now!
         this.dirX = startDirX;
         this.dirY = startDirY;
         this.planeX = startPlaneX;
         this.planeY = startPlaneY;
-
-    }
-
-    private boolean isWalkable(int[][] worldMap, double targetX, double targetY) {
-        int gridX = (int) targetX;
-        int gridY = (int) targetY;
-        
-        if (gridX < 0 || gridX >= worldMap.length || gridY < 0 || gridY >= worldMap[0].length) {
-            return false;
-        }
-        
-        return worldMap[gridX][gridY] == 0;
     }
 
     public void move(boolean w,boolean a,boolean s,boolean d,int[][] worldMap , double deltaTime){
@@ -37,48 +21,44 @@ public class Player{
         double moveSpeed = baseMoveSpeed * deltaTime;
         double rotSpeed = baseRotSpeed * deltaTime;
         
-        double radius = 0.25;
+        double buffer = 0.3;
 
         if (w) {
-            if (isWalkable(worldMap, posX + dirX * moveSpeed + Math.signum(dirX) * radius, posY)) {
+            // We check slightly ahead of where we want to step
+            if (isWalkable(worldMap, posX + dirX * (moveSpeed + buffer), posY)) {
                 posX += dirX * moveSpeed;
             }
-            if (isWalkable(worldMap, posX, posY + dirY * moveSpeed + Math.signum(dirY) * radius)) {
+            if (isWalkable(worldMap, posX, posY + dirY * (moveSpeed + buffer))) {
                 posY += dirY * moveSpeed;
             }
         }
 
         if (s) {
-            if (isWalkable(worldMap, posX - dirX * moveSpeed - Math.signum(dirX) * radius, posY)) {
+            if (isWalkable(worldMap, posX - dirX * (moveSpeed + buffer), posY)) {
                 posX -= dirX * moveSpeed;
             }
-            if (isWalkable(worldMap, posX, posY - dirY * moveSpeed - Math.signum(dirY) * radius)) {
+            if (isWalkable(worldMap, posX, posY - dirY * (moveSpeed + buffer))) {
                 posY -= dirY * moveSpeed;
             }
         }
 
-        if (a){
-
+        // ... (Keep your exact same 'a' and 'd' rotation logic here!) ...
+        if (a) {
             double oldDirX = dirX;
             dirX = oldDirX * Math.cos(rotSpeed) - dirY * Math.sin(rotSpeed);
             dirY = oldDirX * Math.sin(rotSpeed) + dirY * Math.cos(rotSpeed);
-            
             double oldPlaneX = planeX;
             planeX = oldPlaneX * Math.cos(rotSpeed) - planeY * Math.sin(rotSpeed);
             planeY = oldPlaneX * Math.sin(rotSpeed) + planeY * Math.cos(rotSpeed);
-
         }
 
-        if (d){
-
+        if (d) {
             double oldDirX = dirX;
             dirX = oldDirX * Math.cos(-rotSpeed) - dirY * Math.sin(-rotSpeed);
             dirY = oldDirX * Math.sin(-rotSpeed) + dirY * Math.cos(-rotSpeed);
-            
             double oldPlaneX = planeX;
             planeX = oldPlaneX * Math.cos(-rotSpeed) - planeY * Math.sin(-rotSpeed);
             planeY = oldPlaneX * Math.sin(-rotSpeed) + planeY * Math.cos(-rotSpeed);
         }
-
-        }
     }
+}
