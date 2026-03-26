@@ -97,7 +97,7 @@ public class Raycaster{
 
             }
 
-            if (perpWallDist == 0) perpWallDist = 0.0001;
+            perpWallDist = Math.max(0.0001, Math.abs(perpWallDist));
 
             double lineHeight = screenHeight / perpWallDist;
 

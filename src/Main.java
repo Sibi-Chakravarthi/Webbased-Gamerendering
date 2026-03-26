@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 public class Main extends JPanel implements Runnable , KeyListener {
 
@@ -14,11 +16,19 @@ public class Main extends JPanel implements Runnable , KeyListener {
     private GameEngine engine;
     private int[][] currentFrame;
 
+    private final int WIDTH = 1920;
+    private final int HEIGHT = 1080;
+    private BufferedImage image;
+    private int[] pixels;
+
     private boolean w , a , s , d;
 
     public Main(){
 
         engine = new GameEngine();
+
+        image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
         frame = new JFrame("Raycaster Game Engine");
         frame.setSize(1920, 1080);
@@ -43,8 +53,11 @@ public class Main extends JPanel implements Runnable , KeyListener {
     @Override
     public void run() {
         while (isRunning) {
-            
             currentFrame = engine.tick(w, a, s, d);
+            
+            // 1. Color the pixels in RAM
+            renderToBuffer(); 
+            // 2. Slap the image onto the screen
             repaint(); 
 
             try {
@@ -55,35 +68,42 @@ public class Main extends JPanel implements Runnable , KeyListener {
         }
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        
-        g.setColor(new Color(135, 206, 235));
-        g.fillRect(0, 0, 1920, 540);
-        
-        g.setColor(new Color(85, 85, 85));
-        g.fillRect(0, 540, 1920, 540);
-
+    private void renderToBuffer() {
+        for (int i = 0; i < pixels.length; i++) {
+            if (i < pixels.length / 2) {
+                pixels[i] = 0x87CEEB;
+            } else {
+                pixels[i] = 0x555555;
+            }
+        }
         if (currentFrame != null) {
             for (int x = 0; x < currentFrame.length; x++) {
                 int drawStart = currentFrame[x][0];
                 int drawEnd = currentFrame[x][1];
                 int side = currentFrame[x][2];
                 int wallType = currentFrame[x][3];
-                int lineHeight = drawEnd - drawStart;
 
+                // Determine the Hex Color
+                int color = 0;
                 if (wallType == 2) {
-                    g.setColor(side == 0 ? new Color(0, 255, 0) : new Color(0, 170, 0));
+                    color = (side == 0) ? 0x00FF00 : 0x00AA00;
                 } else if (wallType == 3) {
-                    g.setColor(side == 0 ? new Color(0, 0, 255) : new Color(0, 0, 170));
+                    color = (side == 0) ? 0x0000FF : 0x0000AA;
                 } else {
-                    g.setColor(side == 0 ? new Color(204, 0, 0) : new Color(119, 0, 0));
+                    color = (side == 0) ? 0xCC0000 : 0x770000;
                 }
 
-                g.fillRect(x, drawStart, 1, lineHeight);
+                for (int y = drawStart; y < drawEnd; y++) {
+                    pixels[x + y * WIDTH] = color;
+                }
             }
         }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(image, 0, 0, this);
     }
 
     @Override 
@@ -105,9 +125,7 @@ public class Main extends JPanel implements Runnable , KeyListener {
     @Override 
     public void keyTyped(KeyEvent e) {}
 
-    // THE STARTING POINT
     public static void main(String[] args) {
         new Main();
     }
-
 }
