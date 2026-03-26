@@ -63,7 +63,7 @@ public class GameEngine {
         }
     }
 
-    public String tick(boolean w, boolean a, boolean s, boolean d) {
+    public int[][] tick(boolean w, boolean a, boolean s, boolean d) {
 
         long currentTime = System.nanoTime();
         double deltaTime = (currentTime - lastTime) / 1000000000.0;
@@ -72,9 +72,7 @@ public class GameEngine {
 
         player.move(w, a, s, d, worldMap, deltaTime);
 
-        int[][] frameData = raycaster.castRays(player, worldMap);
-
-        return raycaster.toJSON(frameData, player);
+        return raycaster.castRays(player, worldMap);
     }
     
     public String getMapJSON() {

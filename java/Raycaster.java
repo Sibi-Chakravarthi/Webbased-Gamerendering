@@ -2,8 +2,8 @@ public class Raycaster{
 
     int[][] worldMap;
 
-    int screenHeight = 480;
-    int screenwidth = 640;
+    public int screenHeight = 1080;
+    public int screenwidth = 1920;
 
     double sideDistX;
     double sideDistY;
