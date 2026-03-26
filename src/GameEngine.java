@@ -75,19 +75,4 @@ public class GameEngine {
         return raycaster.castRays(player, worldMap);
     }
     
-    public String getMapJSON() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        for (int i = 0; i < worldMap.length; i++) {
-            sb.append("[");
-            for (int j = 0; j < worldMap[i].length; j++) {
-                sb.append(worldMap[i][j]);
-                if (j < worldMap[i].length - 1) sb.append(",");
-            }
-            sb.append("]");
-            if (i < worldMap.length - 1) sb.append(",");
-        }
-        sb.append("]");
-        return sb.toString();
-    }
 }
