@@ -13,11 +13,15 @@ public class Raycaster{
 
     public Player player;
 
+    private int[][] rayData;
+
     public Raycaster() {
 
         this.worldMap = MapLoader.loadMap("map.json");
 
         this.player = new Player(50.5, 50.5, -1, 0, 0, 0.66);
+
+        this.rayData = new int[screenwidth][4];
 
     }
 
@@ -93,19 +97,21 @@ public class Raycaster{
 
             }
 
+            if (perpWallDist == 0) perpWallDist = 0.0001;
+
             double lineHeight = screenHeight / perpWallDist;
 
-            int drawStart = (int) -lineHeight / 2 + screenHeight / 2;
+            int drawStart = (int) Math.round(-lineHeight / 2 + screenHeight / 2);
             
             if (drawStart < 0) {
                 drawStart = 0;
             }
 
-            int drawEnd = (int) lineHeight / 2 + screenHeight / 2;
-            
-            if (drawEnd >= screenHeight) {
-                drawEnd = screenHeight - 1;
+            int drawEnd = (int) Math.round(lineHeight / 2.0 + screenHeight / 2.0);
+            if (drawEnd > screenHeight) {
+                drawEnd = screenHeight;
             }
+
             rayData[x][0] = drawStart;
             rayData[x][1] = drawEnd;
             rayData[x][2] = side;
