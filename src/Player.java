@@ -9,11 +9,23 @@ public class Player extends Entity{
     private double baseRotSpeed = 3.0;
 
     public Player(double startX, double startY, double startDirX, double startDirY, double startPlaneX, double startPlaneY) {
-        super(startX, startY); // This handles the coordinates now!
+        super(startX, startY);
         this.dirX = startDirX;
         this.dirY = startDirY;
         this.planeX = startPlaneX;
         this.planeY = startPlaneY;
+    }
+
+    @Override
+    protected boolean isWalkable(int[][] worldMap, double targetX, double targetY) {
+        int gridX = (int) targetX;
+        int gridY = (int) targetY;
+
+        if (gridX < 0 || gridX >= worldMap.length || gridY < 0 || gridY >= worldMap[0].length) {
+            return false;
+        }
+        
+        return worldMap[gridX][gridY] == 0 || worldMap[gridX][gridY] == 3;
     }
 
     public void move(boolean w,boolean a,boolean s,boolean d,int[][] worldMap , double deltaTime){
