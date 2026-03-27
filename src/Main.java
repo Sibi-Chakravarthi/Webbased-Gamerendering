@@ -65,19 +65,16 @@ public class Main extends JPanel implements Runnable , KeyListener {
         }
     }
 
-    // 🚨 SENIOR FIX: Writing directly to RAM is thousands of times faster than Graphics.fillRect!
     private void renderToBuffer() {
         
-        // 1. Draw the Sky and Floor 
         for (int i = 0; i < pixels.length; i++) {
             if (i < pixels.length / 2) {
-                pixels[i] = 0x87CEEB; // Sky Blue
+                pixels[i] = 0x87CEEB;
             } else {
-                pixels[i] = 0x555555; // Dark Grey
+                pixels[i] = 0x555555;
             }
         }
 
-        // 2. Draw the 3D Walls
         if (currentFrame != null) {
             for (int x = 0; x < currentFrame.length; x++) {
                 int drawStart = currentFrame[x][0];
@@ -85,7 +82,6 @@ public class Main extends JPanel implements Runnable , KeyListener {
                 int side = currentFrame[x][2];
                 int wallType = currentFrame[x][3];
 
-                // Determine the Hex Color
                 int color = 0;
                 if (wallType == 2) {
                     color = (side == 0) ? 0x00FF00 : 0x00AA00;
@@ -95,33 +91,26 @@ public class Main extends JPanel implements Runnable , KeyListener {
                     color = (side == 0) ? 0xCC0000 : 0x770000;
                 }
 
-                // Draw the vertical line into the 1D pixel array
                 for (int y = drawStart; y < drawEnd; y++) {
                     pixels[x + y * WIDTH] = color;
                 }
             }
         }
 
-        // 🚨 THE MATH FLEX: 2D Sprite Billboarding
         if (engine.enemy != null) {
-            
-            // 1. Translate sprite position to relative to player
+
             double spriteX = engine.enemy.posX - engine.player.posX;
             double spriteY = engine.enemy.posY - engine.player.posY;
 
-            // 2. Linear Algebra: Multiply by the Inverse Camera Matrix!
             double invDet = 1.0 / (engine.player.planeX * engine.player.dirY - engine.player.dirX * engine.player.planeY);
 
             double transformX = invDet * (engine.player.dirY * spriteX - engine.player.dirX * spriteY);
             double transformY = invDet * (-engine.player.planeY * spriteX + engine.player.planeX * spriteY);
 
-            // 3. Only draw the enemy if it is IN FRONT of the player (transformY > 0)
             if (transformY > 0) {
-                
-                // Calculate where the center of the enemy is on the X axis of the screen
+
                 int spriteScreenX = (int) ((WIDTH / 2) * (1 + transformX / transformY));
 
-                // Calculate the height and width of the sprite
                 int spriteHeight = Math.abs((int) (HEIGHT / transformY));
                 int drawStartY = -spriteHeight / 2 + HEIGHT / 2;
                 if (drawStartY < 0) drawStartY = 0;
@@ -134,13 +123,11 @@ public class Main extends JPanel implements Runnable , KeyListener {
                 int drawEndX = spriteWidth / 2 + spriteScreenX;
                 if (drawEndX >= WIDTH) drawEndX = WIDTH - 1;
 
-                // 4. Draw the sprite pixel by pixel into the RAM
                 for (int stripe = drawStartX; stripe < drawEndX; stripe++) {
-                    
-                    // 🚨 THE DSA FLEX: The Z-BUFFER Depth Test! 
+
                     if (stripe >= 0 && stripe < WIDTH && transformY < engine.raycaster.zBuffer[stripe]) {
                         for (int y = drawStartY; y < drawEndY; y++) {
-                            pixels[stripe + y * WIDTH] = 0xFF00FF; // Magenta
+                            pixels[stripe + y * WIDTH] = 0xFF00FF;
                         }
                     }
                 }

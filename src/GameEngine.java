@@ -6,8 +6,9 @@ public class GameEngine {
     public Raycaster raycaster;
     public double deltaTime;
     private long lastTime;
-
     private double pathTimer = 0;
+
+    public GameState currentState = GameState.PLAYING;
 
     public GameEngine() {
         
@@ -76,21 +77,28 @@ public class GameEngine {
         double deltaTime = (currentTime - lastTime) / 1000000000.0;
         this.lastTime = currentTime;
 
-        player.move(w, a, s, d, worldMap, deltaTime);
+        if (currentState == GameState.PLAYING) {
+            
+            player.move(w, a, s, d, worldMap, deltaTime);
 
-        pathTimer += deltaTime;
-        if (pathTimer > 0.5) {
-            enemy.updatePath(worldMap, (int) player.posX, (int) player.posY);
-            pathTimer = 0;
-        }
+            pathTimer += deltaTime;
+            if (pathTimer > 0.5) {
+                enemy.updatePath(worldMap, (int) player.posX, (int) player.posY);
+                pathTimer = 0;
+            }
 
-        enemy.move(deltaTime);
+            enemy.move(deltaTime);
 
-        double distanceToPlayer = Math.sqrt(Math.pow(player.posX - enemy.posX, 2) + Math.pow(player.posY - enemy.posY, 2));
-        System.out.println("Enemy Distance: " + String.format("%.2f", distanceToPlayer) + " blocks");
-        
-        if (distanceToPlayer < 0.8) {
-            System.out.println("💀 YOU DIED! The enemy caught you!");
+            if (worldMap[(int) player.posX][(int) player.posY] == 3) {
+                currentState = GameState.VICTORY;
+                System.out.println("🎉 YOU ESCAPED!");
+            }
+
+            double distanceToPlayer = Math.sqrt(Math.pow(player.posX - enemy.posX, 2) + Math.pow(player.posY - enemy.posY, 2));
+            if (distanceToPlayer < 0.8) {
+                currentState = GameState.GAME_OVER;
+                System.out.println("💀 YOU DIED! The enemy caught you!");
+            }
         }
 
         return raycaster.castRays(player, worldMap);
