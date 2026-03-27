@@ -36,7 +36,6 @@ public class Player extends Entity{
         double buffer = 0.3;
 
         if (w) {
-            // We check slightly ahead of where we want to step
             if (isWalkable(worldMap, posX + dirX * (moveSpeed + buffer), posY)) {
                 posX += dirX * moveSpeed;
             }
@@ -54,7 +53,6 @@ public class Player extends Entity{
             }
         }
 
-        // ... (Keep your exact same 'a' and 'd' rotation logic here!) ...
         if (a) {
             double oldDirX = dirX;
             dirX = oldDirX * Math.cos(rotSpeed) - dirY * Math.sin(rotSpeed);
