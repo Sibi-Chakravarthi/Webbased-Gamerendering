@@ -1,4 +1,6 @@
-public class Player extends Entity{
+package entities;
+
+public class Player extends Entity {
     
     public double dirX;
     public double dirY;

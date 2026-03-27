@@ -1,3 +1,5 @@
+package entities;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -101,4 +103,9 @@ public class Enemy extends Entity {
             return Double.compare(this.fCost(), other.fCost());
         }
     }
+
+    public void clearPath() {
+        currentPath.clear();
+    }
+
 }

@@ -1,6 +1,8 @@
-public class Raycaster{
+package graphics;
 
-    int[][] worldMap;
+import entities.Player;
+
+public class Raycaster {
 
     public int screenHeight = 1080;
     public int screenWidth = 1920;
@@ -11,21 +13,11 @@ public class Raycaster{
     int stepX;
     int stepY;
 
-    public Player player;
-
     public double[] zBuffer;
-
     private int[][] rayData;
 
-
     public Raycaster() {
-
-        this.worldMap = MapLoader.loadMap("map.json");
-
-        this.player = new Player(50.5, 50.5, -1, 0, 0, 0.66);
-
         this.rayData = new int[screenWidth][4];
-
         this.zBuffer = new double[screenWidth];
 
     }

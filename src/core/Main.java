@@ -1,32 +1,29 @@
+package core;
+
+import graphics.Renderer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 
-public class Main extends JPanel implements Runnable , KeyListener {
+public class Main extends JPanel implements Runnable, KeyListener {
 
     private JFrame frame;
     private Thread gameThread;
     private boolean isRunning = false;
 
     private GameEngine engine;
+    private Renderer renderer;
     private int[][] currentFrame;
 
     private final int WIDTH = 1920;
     private final int HEIGHT = 1080;
-    private BufferedImage image;
-    private int[] pixels;
-
-    private boolean w , a , s , d;
+    private boolean w, a, s, d;
 
     public Main() {
         engine = new GameEngine();
-
-        image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-        pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+        renderer = new Renderer(WIDTH, HEIGHT);
 
         frame = new JFrame("RayForge Engine");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,122 +50,16 @@ public class Main extends JPanel implements Runnable , KeyListener {
     public void run() {
         while (isRunning) {
             currentFrame = engine.tick(w, a, s, d);
-
-            renderToBuffer(); 
             repaint(); 
 
-            try {
-                Thread.sleep(16); 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void renderToBuffer() {
-        if (engine.currentState == GameState.LOADING) {
-            for (int i = 0; i < pixels.length; i++) {
-                pixels[i] = 0;
-            }
-            return;
-        }
-        
-        for (int i = 0; i < pixels.length; i++) {
-            if (i < pixels.length / 2) {
-                pixels[i] = 0x87CEEB;
-            } else {
-                pixels[i] = 0x555555;
-            }
-        }
-
-        if (currentFrame != null) {
-            for (int x = 0; x < currentFrame.length; x++) {
-                int drawStart = currentFrame[x][0];
-                int drawEnd = currentFrame[x][1];
-                int side = currentFrame[x][2];
-                int wallType = currentFrame[x][3];
-
-                int color = 0;
-                if (wallType == 2) {
-                    color = (side == 0) ? 0x00FF00 : 0x00AA00;
-                } else if (wallType == 3) {
-                    color = (side == 0) ? 0x0000FF : 0x0000AA;
-                } else {
-                    color = (side == 0) ? 0xCC0000 : 0x770000;
-                }
-
-                for (int y = drawStart; y < drawEnd; y++) {
-                    pixels[x + y * WIDTH] = color;
-                }
-            }
-        }
-
-        if (engine.enemy != null) {
-
-            double spriteX = engine.enemy.posX - engine.player.posX;
-            double spriteY = engine.enemy.posY - engine.player.posY;
-
-            double invDet = 1.0 / (engine.player.planeX * engine.player.dirY - engine.player.dirX * engine.player.planeY);
-
-            double transformX = invDet * (engine.player.dirY * spriteX - engine.player.dirX * spriteY);
-            double transformY = invDet * (-engine.player.planeY * spriteX + engine.player.planeX * spriteY);
-
-            if (transformY > 0) {
-
-                int spriteScreenX = (int) ((WIDTH / 2) * (1 + transformX / transformY));
-
-                int spriteHeight = Math.abs((int) (HEIGHT / transformY));
-                int drawStartY = -spriteHeight / 2 + HEIGHT / 2;
-                if (drawStartY < 0) drawStartY = 0;
-                int drawEndY = spriteHeight / 2 + HEIGHT / 2;
-                if (drawEndY >= HEIGHT) drawEndY = HEIGHT - 1;
-
-                int spriteWidth = Math.abs((int) (HEIGHT / transformY));
-                int drawStartX = -spriteWidth / 2 + spriteScreenX;
-                if (drawStartX < 0) drawStartX = 0;
-                int drawEndX = spriteWidth / 2 + spriteScreenX;
-                if (drawEndX >= WIDTH) drawEndX = WIDTH - 1;
-
-                for (int stripe = drawStartX; stripe < drawEndX; stripe++) {
-
-                    if (stripe >= 0 && stripe < WIDTH && transformY < engine.raycaster.zBuffer[stripe]) {
-                        for (int y = drawStartY; y < drawEndY; y++) {
-                            pixels[stripe + y * WIDTH] = 0xFF00FF;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (engine.currentState != GameState.PLAYING) {
-            
-            boolean isGameOver = (engine.currentState == GameState.GAME_OVER);
-            
-            for (int i = 0; i < pixels.length; i++) {
-                int oldPixel = pixels[i];
-
-                int r = (oldPixel >> 16) & 0xFF;
-                int g = (oldPixel >> 8) & 0xFF;
-                int b = oldPixel & 0xFF;
-                if (isGameOver) {
-                    r = (r + 255) >> 1; 
-                    g = g >> 1;
-                    b = b >> 1;
-                } else {
-                    r = r >> 1;
-                    g = (g + 255) >> 1; 
-                    b = b >> 1;
-                }
-
-                pixels[i] = (r << 16) | (g << 8) | b;
-            }
+            try { Thread.sleep(16); } catch (Exception e) { e.printStackTrace(); }
         }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(image, 0, 0, this);
+        renderer.draw(g, engine, currentFrame); 
     }
 
     @Override 
@@ -177,8 +68,12 @@ public class Main extends JPanel implements Runnable , KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_A) a = true;
         if (e.getKeyCode() == KeyEvent.VK_S) s = true;
         if (e.getKeyCode() == KeyEvent.VK_D) d = true;
+
+        // FSM Transitions on ENTER key!
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (engine.currentState == GameState.GAME_OVER || engine.currentState == GameState.VICTORY) {
+            if (engine.currentState == GameState.MENU || 
+                engine.currentState == GameState.GAME_OVER || 
+                engine.currentState == GameState.VICTORY) {
                 engine.reset();
             }
         }
@@ -192,7 +87,7 @@ public class Main extends JPanel implements Runnable , KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_D) d = false;
     }
 
-    @Override
+    @Override 
     public void keyTyped(KeyEvent e) {}
 
     public static void main(String[] args) {
