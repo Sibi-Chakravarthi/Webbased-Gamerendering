@@ -66,6 +66,12 @@ public class Main extends JPanel implements Runnable , KeyListener {
     }
 
     private void renderToBuffer() {
+        if (engine.currentState == GameState.LOADING) {
+            for (int i = 0; i < pixels.length; i++) {
+                pixels[i] = 0;
+            }
+            return;
+        }
         
         for (int i = 0; i < pixels.length; i++) {
             if (i < pixels.length / 2) {
@@ -138,28 +144,22 @@ public class Main extends JPanel implements Runnable , KeyListener {
             
             boolean isGameOver = (engine.currentState == GameState.GAME_OVER);
             
-            // Loop through every pixel on the screen (O(N) operation)
             for (int i = 0; i < pixels.length; i++) {
                 int oldPixel = pixels[i];
 
-                // 1. Bit Masking: Extract RGB using Right Shift (>>) and Bitwise AND (&)
                 int r = (oldPixel >> 16) & 0xFF;
                 int g = (oldPixel >> 8) & 0xFF;
                 int b = oldPixel & 0xFF;
-                // 2. Fast 50% Alpha Blend using Right Shift (>> 1 is identical to / 2)
                 if (isGameOver) {
-                    // Tint Red: Maximize Red, halve Green and Blue
                     r = (r + 255) >> 1; 
                     g = g >> 1;
                     b = b >> 1;
                 } else {
-                    // Tint Green: Maximize Green, halve Red and Blue
                     r = r >> 1;
                     g = (g + 255) >> 1; 
                     b = b >> 1;
                 }
 
-                // 3. Bit Packing: Recombine back into a 32-bit integer using Left Shift (<<) and Bitwise OR (|)
                 pixels[i] = (r << 16) | (g << 8) | b;
             }
         }
@@ -177,6 +177,11 @@ public class Main extends JPanel implements Runnable , KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_A) a = true;
         if (e.getKeyCode() == KeyEvent.VK_S) s = true;
         if (e.getKeyCode() == KeyEvent.VK_D) d = true;
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (engine.currentState == GameState.GAME_OVER || engine.currentState == GameState.VICTORY) {
+                engine.reset();
+            }
+        }
     }
 
     @Override 
@@ -187,7 +192,7 @@ public class Main extends JPanel implements Runnable , KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_D) d = false;
     }
 
-    @Override 
+    @Override
     public void keyTyped(KeyEvent e) {}
 
     public static void main(String[] args) {

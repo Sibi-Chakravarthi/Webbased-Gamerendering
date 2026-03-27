@@ -103,4 +103,30 @@ public class GameEngine {
 
         return raycaster.castRays(player, worldMap);
     }
+
+    public void reset() {
+
+        currentState = GameState.LOADING;
+        new Thread(() -> {
+            try {
+                ProcessBuilder pb = new ProcessBuilder("python", "scripts/map-generator.py");
+                Process p = pb.start();
+
+                p.waitFor(); 
+
+                worldMap = MapLoader.loadMap("map.json");
+
+                player.posX = 1.5;
+                player.posY = 1.5;
+                enemy.posX = 8.5;
+                enemy.posY = 8.5;
+
+                currentState = GameState.PLAYING;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
 }

@@ -1,5 +1,6 @@
 public enum GameState {
     PLAYING,
     GAME_OVER,
-    VICTORY
+    VICTORY,
+    LOADING
 }
