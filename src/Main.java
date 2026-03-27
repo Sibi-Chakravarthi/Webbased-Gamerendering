@@ -133,6 +133,36 @@ public class Main extends JPanel implements Runnable , KeyListener {
                 }
             }
         }
+
+        if (engine.currentState != GameState.PLAYING) {
+            
+            boolean isGameOver = (engine.currentState == GameState.GAME_OVER);
+            
+            // Loop through every pixel on the screen (O(N) operation)
+            for (int i = 0; i < pixels.length; i++) {
+                int oldPixel = pixels[i];
+
+                // 1. Bit Masking: Extract RGB using Right Shift (>>) and Bitwise AND (&)
+                int r = (oldPixel >> 16) & 0xFF;
+                int g = (oldPixel >> 8) & 0xFF;
+                int b = oldPixel & 0xFF;
+                // 2. Fast 50% Alpha Blend using Right Shift (>> 1 is identical to / 2)
+                if (isGameOver) {
+                    // Tint Red: Maximize Red, halve Green and Blue
+                    r = (r + 255) >> 1; 
+                    g = g >> 1;
+                    b = b >> 1;
+                } else {
+                    // Tint Green: Maximize Green, halve Red and Blue
+                    r = r >> 1;
+                    g = (g + 255) >> 1; 
+                    b = b >> 1;
+                }
+
+                // 3. Bit Packing: Recombine back into a 32-bit integer using Left Shift (<<) and Bitwise OR (|)
+                pixels[i] = (r << 16) | (g << 8) | b;
+            }
+        }
     }
 
     @Override
