@@ -7,8 +7,9 @@ import java.util.PriorityQueue;
 
 public class Enemy extends Entity {
 
+    public int health = 100;
+    
     private double moveSpeed = 2.0;
-
     private List<Node> currentPath = new ArrayList<>();
 
     public Enemy(double startX, double startY) {

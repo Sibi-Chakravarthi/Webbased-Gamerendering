@@ -151,8 +151,10 @@ public class Renderer {
     private void drawSprites(GameEngine engine) {
         if (engine.player == null) return;
 
-        if (engine.enemy != null) {
-            drawSingleSprite(engine, engine.enemy.posX, engine.enemy.posY, 0xFF0000); 
+        if (engine.enemies != null) {
+            for (entities.Enemy e : engine.enemies) {
+                drawSingleSprite(engine, e.posX, e.posY, 0xFF0000); 
+            }
         }
 
         if (engine.floorItems != null) {
