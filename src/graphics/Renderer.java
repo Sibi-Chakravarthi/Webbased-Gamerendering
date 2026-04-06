@@ -70,30 +70,46 @@ public class Renderer {
     }
 
     private void drawSprites(GameEngine engine) {
-        if (engine.enemy != null && engine.player != null) {
-            double spriteX = engine.enemy.posX - engine.player.posX;
-            double spriteY = engine.enemy.posY - engine.player.posY;
+        if (engine.player == null) return;
 
-            double invDet = 1.0 / (engine.player.planeX * engine.player.dirY - engine.player.dirX * engine.player.planeY);
-            double transformX = invDet * (engine.player.dirY * spriteX - engine.player.dirX * spriteY);
-            double transformY = invDet * (-engine.player.planeY * spriteX + engine.player.planeX * spriteY);
+        if (engine.enemy != null) {
+            drawSingleSprite(engine, engine.enemy.posX, engine.enemy.posY, 0xFF0000);
+        }
 
-            if (transformY > 0) {
-                int spriteScreenX = (int) ((width / 2) * (1 + transformX / transformY));
-                int spriteHeight = Math.abs((int) (height / transformY));
-                
-                int drawStartY = Math.max(0, -spriteHeight / 2 + height / 2);
-                int drawEndY = Math.min(height - 1, spriteHeight / 2 + height / 2);
+        if (engine.floorItems != null) {
+            for (entities.Item item : engine.floorItems) {
+                if (!item.isCollected) {
+                    drawSingleSprite(engine, item.posX, item.posY, 0x00FF00);
+                }
+            }
+        }
+    }
 
-                int spriteWidth = Math.abs((int) (height / transformY));
-                int drawStartX = Math.max(0, -spriteWidth / 2 + spriteScreenX);
-                int drawEndX = Math.min(width - 1, spriteWidth / 2 + spriteScreenX);
+    private void drawSingleSprite(GameEngine engine, double entityX, double entityY, int colorHex) {
+        double spriteX = entityX - engine.player.posX;
+        double spriteY = entityY - engine.player.posY;
 
-                for (int stripe = drawStartX; stripe < drawEndX; stripe++) {
-                    if (transformY < engine.raycaster.zBuffer[stripe]) {
-                        for (int y = drawStartY; y < drawEndY; y++) {
-                            pixels[stripe + y * width] = 0xFF00FF;
-                        }
+        double invDet = 1.0 / (engine.player.planeX * engine.player.dirY - engine.player.dirX * engine.player.planeY);
+        double transformX = invDet * (engine.player.dirY * spriteX - engine.player.dirX * spriteY);
+        double transformY = invDet * (-engine.player.planeY * spriteX + engine.player.planeX * spriteY);
+
+        if (transformY > 0) {
+            int spriteScreenX = (int) ((width / 2) * (1 + transformX / transformY));
+
+            int vMoveScreen = (int)(128 / transformY); 
+            int spriteHeight = Math.abs((int) (height / transformY)) / 2;
+            
+            int drawStartY = Math.max(0, -spriteHeight / 2 + height / 2 + vMoveScreen);
+            int drawEndY = Math.min(height - 1, spriteHeight / 2 + height / 2 + vMoveScreen);
+
+            int spriteWidth = Math.abs((int) (height / transformY)) / 2;
+            int drawStartX = Math.max(0, -spriteWidth / 2 + spriteScreenX);
+            int drawEndX = Math.min(width - 1, spriteWidth / 2 + spriteScreenX);
+
+            for (int stripe = drawStartX; stripe < drawEndX; stripe++) {
+                if (transformY < engine.raycaster.zBuffer[stripe]) {
+                    for (int y = drawStartY; y < drawEndY; y++) {
+                        pixels[stripe + y * width] = colorHex;
                     }
                 }
             }
@@ -109,9 +125,9 @@ public class Renderer {
             int b = oldPixel & 0xFF;
 
             if (isGameOver) {
-                r = (r + 255) >> 1; g >>= 1; b >>= 1; // Red Tint
+                r = (r + 255) >> 1; g >>= 1; b >>= 1;
             } else {
-                r >>= 1; g = (g + 255) >> 1; b >>= 1; // Green Tint
+                r >>= 1; g = (g + 255) >> 1; b >>= 1;
             }
             pixels[i] = (r << 16) | (g << 8) | b;
         }

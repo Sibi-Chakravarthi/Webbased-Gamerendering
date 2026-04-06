@@ -4,6 +4,9 @@ import entities.Enemy;
 import entities.Player;
 import graphics.Raycaster;
 import world.MapLoader;
+import entities.Item;
+import items.HealthPack;
+import interfaces.IConsumable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,12 +20,14 @@ public class GameEngine {
     private double pathTimer = 0;
 
     public GameState currentState = GameState.MENU; 
+    public ArrayList<Item> floorItems;
 
     public GameEngine() {
         this.raycaster = new Raycaster();
         this.player = new Player(1.5, 1.5, 1, 0, 0, -0.66);
         this.enemy = new Enemy(8.5, 8.5);
         this.lastTime = System.nanoTime();
+        this.floorItems = new ArrayList<>();
     }
 
     public void reset() {
@@ -72,6 +77,8 @@ public class GameEngine {
         enemy.posY = validSpawns.get(enemyIndex)[1] + 0.5;
         
         enemy.clearPath();
+        floorItems.clear();
+        floorItems.add(new HealthPack(player.posX, player.posY));
     }
 
     public int[][] tick(boolean w, boolean a, boolean s, boolean d) {
@@ -86,6 +93,23 @@ public class GameEngine {
             if (pathTimer > 0.5) {
                 enemy.updatePath(worldMap, (int) player.posX, (int) player.posY);
                 pathTimer = 0;
+            }
+
+            for (int i = floorItems.size() - 1; i >= 0; i--) {
+                Item item = floorItems.get(i);
+
+                double dx = player.posX - item.posX;
+                double dy = player.posY - item.posY;
+                double distance = Math.sqrt((dx * dx) + (dy * dy));
+!
+                if (distance < 0.5 && !item.isCollected) {
+
+                    if (item instanceof IConsumable) {
+                        ((IConsumable) item).consume(player);
+                    }
+                    
+                    floorItems.remove(i);
+                }
             }
 
             enemy.move(deltaTime);

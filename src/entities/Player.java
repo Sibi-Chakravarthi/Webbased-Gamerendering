@@ -10,6 +10,10 @@ public class Player extends Entity {
     private double baseMoveSpeed = 5.0; 
     private double baseRotSpeed = 3.0;
 
+    public int health = 100;
+    // public IEquippable[] weapons = new IEquippable[3]; // (We will use this when we build guns!)
+    // public int activeSlot = 0;
+
     public Player(double startX, double startY, double startDirX, double startDirY, double startPlaneX, double startPlaneY) {
         super(startX, startY);
         this.dirX = startDirX;
