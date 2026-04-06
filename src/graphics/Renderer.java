@@ -58,8 +58,8 @@ public class Renderer {
                 int wallType = currentFrame[x][3];
 
                 int color = 0;
-                if (wallType == 2) color = (side == 0) ? 0x00FF00 : 0x00AA00;
-                else if (wallType == 3) color = (side == 0) ? 0x0000FF : 0x0000AA;
+                if (wallType == 2) color = (side == 0) ? 0x0000FF : 0x00AA00;
+                else if (wallType == 3) color = (side == 0) ? 0x00FF00 : 0x0000AA;
                 else color = (side == 0) ? 0xCC0000 : 0x770000;
 
                 for (int y = drawStart; y < drawEnd; y++) {

@@ -30,11 +30,17 @@ public class GameEngine {
 
         new Thread(() -> {
             try {
-                ProcessBuilder pb = new ProcessBuilder("python", "RayForge-Engine/scripts/map-generator.py");
+                ProcessBuilder pb = new ProcessBuilder("python", "scripts/map-generator.py");
                 Process p = pb.start();
                 p.waitFor(); 
 
-                worldMap = MapLoader.loadMap("RayForge-Engine/map.json");
+                worldMap = MapLoader.loadMap("map.json");
+
+                if (worldMap == null) {
+                    System.err.println("CRITICAL: Failed to load map.json. Aborting spawn.");
+                    return;
+                }
+
                 spawnEntities(); 
 
                 currentState = GameState.PLAYING;
