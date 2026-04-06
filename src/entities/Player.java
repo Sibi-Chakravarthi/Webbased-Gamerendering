@@ -1,6 +1,5 @@
 package entities;
 
-// 🛠️ Senior Dev Fix: We MUST import the interface so Java knows what it is!
 import interfaces.IEquippable;
 
 public class Player extends Entity {
@@ -9,11 +8,9 @@ public class Player extends Entity {
     public double dirY;
     public double planeX;
     public double planeY;
-    
-    // 👻 The Cheat Code Toggle
+
     public boolean isGhostMode = false; 
 
-    // 🎒 The Inventory System
     public int health = 100;
     public IEquippable[] inventory = new IEquippable[3]; 
     public int activeSlot = 0;
@@ -56,7 +53,6 @@ public class Player extends Entity {
         }
     }
 
-    // 🎓 OOP Flex: Encapsulated Inventory Management
     public boolean pickupWeapon(IEquippable weapon) {
         for (int i = 0; i < inventory.length; i++) {
             if (inventory[i] == null) { 
