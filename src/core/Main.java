@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import interfaces.IEquippable;
+
 public class Main extends JPanel implements Runnable, KeyListener {
 
     private JFrame frame;
@@ -69,12 +71,20 @@ public class Main extends JPanel implements Runnable, KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_S) s = true;
         if (e.getKeyCode() == KeyEvent.VK_D) d = true;
 
-        // FSM Transitions on ENTER key!
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             if (engine.currentState == GameState.MENU || 
                 engine.currentState == GameState.GAME_OVER || 
                 engine.currentState == GameState.VICTORY) {
                 engine.reset();
+            }
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_SPACE && engine.currentState == GameState.PLAYING) {
+            IEquippable currentWeapon = engine.player.inventory[engine.player.activeSlot];
+            if (currentWeapon != null) {
+                currentWeapon.fire(engine);
+            } else {
+                System.out.println("❌ *Click* Your hands are empty!");
             }
         }
     }

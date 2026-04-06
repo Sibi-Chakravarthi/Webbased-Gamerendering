@@ -4,11 +4,14 @@ import entities.Enemy;
 import entities.Player;
 import graphics.Raycaster;
 import world.MapLoader;
-import entities.Item;
-import items.HealthPack;
-import interfaces.IConsumable;
 import java.util.ArrayList;
 import java.util.Random;
+
+import entities.Item;
+import items.HealthPack;
+import items.Blaster;
+import interfaces.IConsumable;
+import interfaces.IEquippable;
 
 public class GameEngine {
 
@@ -18,9 +21,9 @@ public class GameEngine {
     public Raycaster raycaster;
     private long lastTime;
     private double pathTimer = 0;
-
-    public GameState currentState = GameState.MENU; 
+    
     public ArrayList<Item> floorItems;
+    public GameState currentState = GameState.MENU; 
 
     public GameEngine() {
         this.raycaster = new Raycaster();
@@ -40,12 +43,12 @@ public class GameEngine {
                 p.waitFor(); 
 
                 worldMap = MapLoader.loadMap("map.json");
-
+                
                 if (worldMap == null) {
                     System.err.println("CRITICAL: Failed to load map.json. Aborting spawn.");
-                    return;
+                    return; 
                 }
-
+                
                 spawnEntities(); 
 
                 currentState = GameState.PLAYING;
@@ -77,8 +80,10 @@ public class GameEngine {
         enemy.posY = validSpawns.get(enemyIndex)[1] + 0.5;
         
         enemy.clearPath();
+        
         floorItems.clear();
-        floorItems.add(new HealthPack(player.posX, player.posY));
+        floorItems.add(new HealthPack(player.posX, player.posY)); 
+        floorItems.add(new Blaster(player.posX + 1.0, player.posY)); 
     }
 
     public int[][] tick(boolean w, boolean a, boolean s, boolean d) {
@@ -95,24 +100,27 @@ public class GameEngine {
                 pathTimer = 0;
             }
 
+            enemy.move(deltaTime);
+
             for (int i = floorItems.size() - 1; i >= 0; i--) {
                 Item item = floorItems.get(i);
-
+                
                 double dx = player.posX - item.posX;
                 double dy = player.posY - item.posY;
                 double distance = Math.sqrt((dx * dx) + (dy * dy));
-!
-                if (distance < 0.5 && !item.isCollected) {
 
+                if (distance < 0.5 && !item.isCollected) {
                     if (item instanceof IConsumable) {
                         ((IConsumable) item).consume(player);
+                        floorItems.remove(i); 
+                    } else if (item instanceof IEquippable) {
+                        boolean pickedUp = player.pickupWeapon((IEquippable) item);
+                        if (pickedUp) {
+                            floorItems.remove(i); 
+                        }
                     }
-                    
-                    floorItems.remove(i);
                 }
             }
-
-            enemy.move(deltaTime);
 
             if (worldMap[(int) player.posX][(int) player.posY] == 3) {
                 currentState = GameState.VICTORY;
