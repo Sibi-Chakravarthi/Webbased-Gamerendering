@@ -9,12 +9,12 @@ public class Player extends Entity {
     public double planeX;
     public double planeY;
 
-    public boolean isGhostMode = false; 
+    public boolean isGhostMode = false;
 
     public int health = 100;
     public int killCount = 0;
     public double weaponCooldown = 0;
-    public IEquippable[] inventory = new IEquippable[3]; 
+    public IEquippable[] inventory = new IEquippable[3];
     public int activeSlot = 0;
 
     public Player(double startX, double startY, double dirX, double dirY, double planeX, double planeY) {
@@ -27,7 +27,7 @@ public class Player extends Entity {
 
     public void move(boolean w, boolean a, boolean s, boolean d, int[][] worldMap, double deltaTime) {
         double moveSpeed = 5.0 * deltaTime;
-        double rotSpeed = 3.0 * deltaTime;
+        double rotSpeed = 1.75 * deltaTime;
 
         double radius = 0.25;
 
@@ -53,30 +53,30 @@ public class Player extends Entity {
             }
         }
 
-        if (a){
+        if (a) {
 
             double oldDirX = dirX;
             dirX = oldDirX * Math.cos(rotSpeed) - dirY * Math.sin(rotSpeed);
             dirY = oldDirX * Math.sin(rotSpeed) + dirY * Math.cos(rotSpeed);
-            
+
             double oldPlaneX = planeX;
             planeX = oldPlaneX * Math.cos(rotSpeed) - planeY * Math.sin(rotSpeed);
             planeY = oldPlaneX * Math.sin(rotSpeed) + planeY * Math.cos(rotSpeed);
 
         }
 
-        if (d){
+        if (d) {
 
             double oldDirX = dirX;
             dirX = oldDirX * Math.cos(-rotSpeed) - dirY * Math.sin(-rotSpeed);
             dirY = oldDirX * Math.sin(-rotSpeed) + dirY * Math.cos(-rotSpeed);
-            
+
             double oldPlaneX = planeX;
             planeX = oldPlaneX * Math.cos(-rotSpeed) - planeY * Math.sin(-rotSpeed);
             planeY = oldPlaneX * Math.sin(-rotSpeed) + planeY * Math.cos(-rotSpeed);
         }
 
-        }
+    }
 
     public boolean pickupWeapon(IEquippable weapon) {
         for (int i = 0; i < inventory.length; i++) {
@@ -88,29 +88,29 @@ public class Player extends Entity {
         }
 
         for (int i = 0; i < inventory.length; i++) {
-            if (inventory[i] == null) { 
+            if (inventory[i] == null) {
                 inventory[i] = weapon;
                 System.out.println("🎒 Picked up weapon into Slot " + (i + 1));
-                return true; 
+                return true;
             }
         }
         System.out.println("⚠️ Inventory Full! Left weapon on the floor.");
-        return false; 
+        return false;
     }
 
     @Override
     protected boolean isWalkable(int[][] worldMap, double targetX, double targetY) {
         int gridX = (int) targetX;
         int gridY = (int) targetY;
-        
+
         if (gridX < 0 || gridX >= worldMap.length || gridY < 0 || gridY >= worldMap[0].length) {
             return false;
         }
-        
+
         if (isGhostMode) {
-            return true; 
+            return true;
         }
-        
+
         return worldMap[gridX][gridY] == 0 || worldMap[gridX][gridY] == 3;
     }
 }
