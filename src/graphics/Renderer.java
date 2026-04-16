@@ -211,7 +211,7 @@ public class Renderer {
 
         g.setColor(Color.WHITE);
         g.drawString("WAVE " + engine.currentLevel, width / 2 - 60, 50);
-        g.drawString("KILLS: " + engine.player.killCount, width - 250, 50);
+        g.drawString("KILLS: " + engine.player.killCount, width - 350, 50);
 
         g.setColor(Color.GREEN);
         g.drawString("HP: " + engine.player.health, 30, height - 80);

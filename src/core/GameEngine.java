@@ -33,9 +33,10 @@ public class GameEngine {
     public double startPointX = -1, startPointY = -1;
     public double exitPointX = -1, exitPointY = -1;
 
-    public GameEngine() {
-        this.raycaster = new Raycaster();
+    public GameEngine(int width, int height) {
+        this.raycaster = new Raycaster(width, height);
         this.player = new Player(1.5, 1.5, 1, 0, 0, -0.66);
+        this.player.pickupWeapon(new Blaster(-1, -1));
         this.enemies = new CopyOnWriteArrayList<>();
         this.floorItems = new CopyOnWriteArrayList<>();
         this.lastTime = System.nanoTime();
@@ -112,7 +113,7 @@ public class GameEngine {
 
         enemies.clear();
         Random rand = new Random();
-        int enemiesToSpawn = Math.min(currentLevel, validSpawns.size());
+        int enemiesToSpawn = Math.min(10 + (currentLevel * 5), validSpawns.size());
         
         for (int i = 0; i < enemiesToSpawn; i++) {
             int enemyIndex = rand.nextInt(validSpawns.size());

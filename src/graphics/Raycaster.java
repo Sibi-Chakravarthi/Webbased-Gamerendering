@@ -4,8 +4,8 @@ import entities.Player;
 
 public class Raycaster {
 
-    public int screenHeight = 1080;
-    public int screenWidth = 1920;
+    public int screenHeight;
+    public int screenWidth;
 
     double sideDistX;
     double sideDistY;
@@ -17,7 +17,9 @@ public class Raycaster {
     public double[] wallXBuffer;
     private int[][] rayData;
 
-    public Raycaster() {
+    public Raycaster(int width, int height) {
+        this.screenWidth = width;
+        this.screenHeight = height;
         this.rayData = new int[screenWidth][4];
         this.zBuffer = new double[screenWidth];
         this.wallXBuffer = new double[screenWidth];

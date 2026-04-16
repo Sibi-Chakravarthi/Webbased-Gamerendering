@@ -8,6 +8,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import interfaces.IEquippable;
+import java.awt.Toolkit;
+import java.awt.Dimension;
 
 public class Main extends JPanel implements Runnable, KeyListener {
 
@@ -19,23 +21,28 @@ public class Main extends JPanel implements Runnable, KeyListener {
     private Renderer renderer;
     private int[][] currentFrame;
 
-    private final int WIDTH = 1920;
-    private final int HEIGHT = 1080;
+    private int WIDTH;
+    private int HEIGHT;
     private boolean w, a, s, d;
     private boolean isShooting;
 
     public Main() {
-        engine = new GameEngine();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        WIDTH = (int) screenSize.getWidth();
+        HEIGHT = (int) screenSize.getHeight();
+
+        engine = new GameEngine(WIDTH, HEIGHT);
         renderer = new Renderer(WIDTH, HEIGHT);
 
         frame = new JFrame("RayForge Engine");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
+        frame.setUndecorated(true);
 
         this.setPreferredSize(new java.awt.Dimension(WIDTH, HEIGHT));
         frame.add(this);
         frame.pack(); 
         
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.addKeyListener(this);
         frame.setVisible(true);
