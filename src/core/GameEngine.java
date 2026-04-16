@@ -113,7 +113,7 @@ public class GameEngine {
 
         enemies.clear();
         Random rand = new Random();
-        int enemiesToSpawn = Math.min(10 + (currentLevel * 5), validSpawns.size());
+        int enemiesToSpawn = Math.min(3 + (currentLevel * 3), validSpawns.size());
         
         for (int i = 0; i < enemiesToSpawn; i++) {
             int enemyIndex = rand.nextInt(validSpawns.size());

@@ -323,13 +323,34 @@ public class Renderer {
         }
     }
 
+    private static class SpriteInfo implements Comparable<SpriteInfo> {
+        double distance;
+        double x, y;
+        int color;
+        Texture tex;
+        int frame, totalFrames;
+        double scale;
+
+        public SpriteInfo(double distance, double x, double y, int color, Texture tex, int frame, int totalFrames, double scale) {
+            this.distance = distance; this.x = x; this.y = y; this.color = color;
+            this.tex = tex; this.frame = frame; this.totalFrames = totalFrames; this.scale = scale;
+        }
+
+        @Override
+        public int compareTo(SpriteInfo o) {
+            return Double.compare(o.distance, this.distance);
+        }
+    }
+
     private void drawSprites(GameEngine engine) {
         if (engine.player == null) return;
 
+        java.util.List<SpriteInfo> sprites = new java.util.ArrayList<>();
+
         if (engine.enemies != null) {
             for (entities.Enemy e : engine.enemies) {
-
-                drawSingleSprite(engine, e.posX, e.posY, 0, enemySprite, e.currentFrame, 4, 1.0); 
+                double dist = Math.pow(engine.player.posX - e.posX, 2) + Math.pow(engine.player.posY - e.posY, 2);
+                sprites.add(new SpriteInfo(dist, e.posX, e.posY, 0, enemySprite, e.currentFrame, 4, 1.0)); 
             }
         }
 
@@ -352,9 +373,16 @@ public class Renderer {
                         color = (item instanceof interfaces.IEquippable) ? 0x00FFFF : 0x00FF00;
                     }
 
-                    drawSingleSprite(engine, item.posX, item.posY, color, tex, 0, 1, 0.4); 
+                    double dist = Math.pow(engine.player.posX - item.posX, 2) + Math.pow(engine.player.posY - item.posY, 2);
+                    sprites.add(new SpriteInfo(dist, item.posX, item.posY, color, tex, 0, 1, 0.4)); 
                 }
             }
+        }
+
+        java.util.Collections.sort(sprites);
+
+        for (SpriteInfo s : sprites) {
+            drawSingleSprite(engine, s.x, s.y, s.color, s.tex, s.frame, s.totalFrames, s.scale);
         }
     }
 
