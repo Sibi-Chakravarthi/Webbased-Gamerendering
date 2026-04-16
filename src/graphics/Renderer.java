@@ -211,15 +211,17 @@ public class Renderer {
 
         g.setColor(Color.WHITE);
         g.drawString("WAVE " + engine.currentLevel, width / 2 - 60, 50);
+        g.drawString("KILLS: " + engine.player.killCount, width - 250, 50);
 
         g.setColor(Color.GREEN);
         g.drawString("HP: " + engine.player.health, 30, height - 80);
 
         IEquippable currentWeapon = engine.player.inventory[engine.player.activeSlot];
         String weaponName = (currentWeapon != null) ? currentWeapon.getClass().getSimpleName() : "UNARMED";
+        String ammoText = (currentWeapon != null) ? String.valueOf(currentWeapon.getAmmo()) : "0";
         
         g.setColor(Color.ORANGE);
-        g.drawString("WPN: " + weaponName, 30, height - 50); 
+        g.drawString("WPN: " + weaponName + " | AMMO: " + ammoText, 30, height - 50); 
 
         BufferedImage currentHUD = null;
         if (currentWeapon instanceof items.Shotgun) currentHUD = shotgunSprite;
@@ -228,7 +230,11 @@ public class Renderer {
 
         if (currentWeapon != null && currentHUD != null) {
 
-            int recoilOffset = (engine.player.weaponCooldown > 0) ? (int)(engine.player.weaponCooldown * 150) : 0;
+            double maxCooldown = 0.6;
+            if (currentWeapon instanceof items.Shotgun) maxCooldown = 1.0;
+            else if (currentWeapon instanceof items.Rifle) maxCooldown = 0.15;
+
+            int recoilOffset = (engine.player.weaponCooldown > 0) ? (int)((engine.player.weaponCooldown / maxCooldown) * 80) : 0;
             
             int desiredHeight = height / 2;
             double scaleRatio = (double) desiredHeight / currentHUD.getHeight();
@@ -236,13 +242,13 @@ public class Renderer {
             int scaledWidth = (int) (currentHUD.getWidth() * scaleRatio);
             int scaledHeight = (int) (currentHUD.getHeight() * scaleRatio);
             
-            int drawX = (width / 2) - (scaledWidth / 2) - 60; 
+            int drawX = (width / 2) - (scaledWidth / 2) + 250; 
 
             int drawY = height - scaledHeight - recoilOffset + 40; 
             
             g.drawImage(currentHUD, drawX, drawY, scaledWidth, scaledHeight, null);
 
-            if (engine.player.weaponCooldown > 0.4) { 
+            if (engine.player.weaponCooldown > maxCooldown * 0.6) { 
                 g.setColor(new Color(255, 255, 150, 100)); 
                 g.fillRect(0, 0, width, height);
             }

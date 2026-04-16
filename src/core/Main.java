@@ -22,6 +22,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
     private final int WIDTH = 1920;
     private final int HEIGHT = 1080;
     private boolean w, a, s, d;
+    private boolean isShooting;
 
     public Main() {
         engine = new GameEngine();
@@ -52,6 +53,23 @@ public class Main extends JPanel implements Runnable, KeyListener {
     public void run() {
         while (isRunning) {
             currentFrame = engine.tick(w, a, s, d);
+
+            if (isShooting && engine.currentState == GameState.PLAYING) {
+                IEquippable currentWeapon = engine.player.inventory[engine.player.activeSlot];
+                if (currentWeapon != null && engine.player.weaponCooldown <= 0 && currentWeapon.getAmmo() > 0) {
+                    currentWeapon.fire(engine);
+                    if (currentWeapon instanceof items.Shotgun) engine.player.weaponCooldown = 1.0;
+                    else if (currentWeapon instanceof items.Rifle) engine.player.weaponCooldown = 0.15;
+                    else engine.player.weaponCooldown = 0.6;
+                } else if (currentWeapon != null && engine.player.weaponCooldown <= 0 && currentWeapon.getAmmo() <= 0) {
+                    System.out.println("❌ *Click* Out of ammo!");
+                    engine.player.weaponCooldown = 0.25;
+                } else if (currentWeapon == null && engine.player.weaponCooldown <= 0) {
+                    System.out.println("❌ *Click* Your hands are empty!");
+                    engine.player.weaponCooldown = 0.6;
+                }
+            }
+
             repaint(); 
 
             try { Thread.sleep(16); } catch (Exception e) { e.printStackTrace(); }
@@ -83,16 +101,8 @@ public class Main extends JPanel implements Runnable, KeyListener {
             }
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_SPACE && engine.currentState == GameState.PLAYING) {
-            IEquippable currentWeapon = engine.player.inventory[engine.player.activeSlot];
-            if (currentWeapon != null && engine.player.weaponCooldown <= 0) {
-                currentWeapon.fire(engine);
-                if (currentWeapon instanceof items.Shotgun) engine.player.weaponCooldown = 1.0;
-                else if (currentWeapon instanceof items.Rifle) engine.player.weaponCooldown = 0.15;
-                else engine.player.weaponCooldown = 0.6;
-            } else if (currentWeapon == null) {
-                System.out.println("❌ *Click* Your hands are empty!");
-            }
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            isShooting = true;
         }
     }
 
@@ -102,6 +112,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_A) a = false;
         if (e.getKeyCode() == KeyEvent.VK_S) s = false;
         if (e.getKeyCode() == KeyEvent.VK_D) d = false;
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) isShooting = false;
     }
 
     @Override 

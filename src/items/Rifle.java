@@ -7,13 +7,27 @@ import interfaces.IEquippable;
 
 public class Rifle extends Item implements IEquippable {
 
+    public int ammo = 100;
+
     public Rifle(double x, double y) {
         super(x, y);
     }
 
     @Override
+    public int getAmmo() {
+        return ammo;
+    }
+
+    @Override
+    public void addAmmo(int amount) {
+        this.ammo += amount;
+    }
+
+    @Override
     public void fire(GameEngine engine) {
-        System.out.println("🔫 RAT-TAT-TAT! Fired the Rifle!");
+        if (ammo <= 0) return;
+        ammo--;
+        System.out.println("🔫 RAT-TAT-TAT! Fired the Rifle! Ammo left: " + ammo);
 
         Enemy closestEnemy = null;
         double minDistance = Double.MAX_VALUE;
@@ -43,6 +57,7 @@ public class Rifle extends Item implements IEquippable {
             if (closestEnemy.health <= 0) {
                 System.out.println("💀 Enemy Defeated!");
                 engine.enemies.remove(closestEnemy);
+                engine.player.killCount++;
             }
         } else {
             System.out.println("💨 Missed!");

@@ -7,13 +7,27 @@ import interfaces.IEquippable;
 
 public class Shotgun extends Item implements IEquippable {
 
+    public int ammo = 15;
+
     public Shotgun(double x, double y) {
         super(x, y);
     }
 
     @Override
+    public int getAmmo() {
+        return ammo;
+    }
+
+    @Override
+    public void addAmmo(int amount) {
+        this.ammo += amount;
+    }
+
+    @Override
     public void fire(GameEngine engine) {
-        System.out.println("💥 BOOM! Fired the Shotgun!");
+        if (ammo <= 0) return;
+        ammo--;
+        System.out.println("💥 BOOM! Fired the Shotgun! Ammo left: " + ammo);
 
         boolean hitSomething = false;
 
@@ -38,6 +52,7 @@ public class Shotgun extends Item implements IEquippable {
                 if (e.health <= 0) {
                     System.out.println("💀 Enemy Obliterated!");
                     engine.enemies.remove(i);
+                    engine.player.killCount++;
                 }
             }
         }

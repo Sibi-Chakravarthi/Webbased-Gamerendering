@@ -12,6 +12,7 @@ public class Player extends Entity {
     public boolean isGhostMode = false; 
 
     public int health = 100;
+    public int killCount = 0;
     public double weaponCooldown = 0;
     public IEquippable[] inventory = new IEquippable[3]; 
     public int activeSlot = 0;
@@ -78,6 +79,14 @@ public class Player extends Entity {
         }
 
     public boolean pickupWeapon(IEquippable weapon) {
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] != null && inventory[i].getClass().equals(weapon.getClass())) {
+                inventory[i].addAmmo(weapon.getAmmo());
+                System.out.println("🎒 Picked up ammo for " + weapon.getClass().getSimpleName());
+                return true;
+            }
+        }
+
         for (int i = 0; i < inventory.length; i++) {
             if (inventory[i] == null) { 
                 inventory[i] = weapon;
