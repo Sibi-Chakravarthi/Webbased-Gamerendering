@@ -213,6 +213,11 @@ public class Renderer {
         g.drawString("WAVE " + engine.currentLevel, width / 2 - 60, 50);
         g.drawString("KILLS: " + engine.player.killCount, width - 350, 50);
 
+        // Draw Crosshair
+        g.setColor(new Color(255, 255, 255, 180));
+        g.drawLine(width / 2 - 15, height / 2, width / 2 + 15, height / 2);
+        g.drawLine(width / 2, height / 2 - 15, width / 2, height / 2 + 15);
+
         g.setColor(Color.GREEN);
         g.drawString("HP: " + engine.player.health, 30, height - 80);
 
@@ -242,7 +247,7 @@ public class Renderer {
             int scaledWidth = (int) (currentHUD.getWidth() * scaleRatio);
             int scaledHeight = (int) (currentHUD.getHeight() * scaleRatio);
             
-            int drawX = (width / 2) - (scaledWidth / 2) + 250; 
+            int drawX = (width / 2) - (scaledWidth / 2) + 350; 
 
             int drawY = height - scaledHeight - recoilOffset + 40; 
             
