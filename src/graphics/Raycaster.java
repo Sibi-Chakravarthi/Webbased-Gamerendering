@@ -14,12 +14,13 @@ public class Raycaster {
     int stepY;
 
     public double[] zBuffer;
+    public double[] wallXBuffer;
     private int[][] rayData;
 
     public Raycaster() {
         this.rayData = new int[screenWidth][4];
         this.zBuffer = new double[screenWidth];
-
+        this.wallXBuffer = new double[screenWidth];
     }
 
     public int[][] castRays(Player player, int[][] worldMap){
@@ -95,6 +96,15 @@ public class Raycaster {
             perpWallDist = Math.max(0.0001, Math.abs(perpWallDist));
 
             this.zBuffer[x] = perpWallDist;
+
+            double wallX;
+            if (side == 0) {
+                wallX = player.posY + perpWallDist * rayDirY;
+            } else {
+                wallX = player.posX + perpWallDist * rayDirX;
+            }
+            wallX -= Math.floor(wallX); 
+            this.wallXBuffer[x] = wallX;
 
             double lineHeight = screenHeight / perpWallDist;
 

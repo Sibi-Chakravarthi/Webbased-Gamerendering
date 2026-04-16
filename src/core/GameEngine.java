@@ -6,10 +6,13 @@ import graphics.Raycaster;
 import world.MapLoader;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import entities.Item;
 import items.HealthPack;
 import items.Blaster;
+import items.Shotgun;
+import items.Rifle;
 import interfaces.IConsumable;
 import interfaces.IEquippable;
 
@@ -20,19 +23,21 @@ public class GameEngine {
     public Raycaster raycaster;
     private long lastTime;
     private double pathTimer = 0;
-    
-    // 🎓 OOP Flex: Dynamic Scaling Variables!
+
     public int currentLevel = 1; 
-    public ArrayList<Enemy> enemies; 
+    public CopyOnWriteArrayList<Enemy> enemies; 
     
-    public ArrayList<Item> floorItems;
+    public CopyOnWriteArrayList<Item> floorItems;
     public GameState currentState = GameState.MENU; 
+    
+    public double startPointX = -1, startPointY = -1;
+    public double exitPointX = -1, exitPointY = -1;
 
     public GameEngine() {
         this.raycaster = new Raycaster();
         this.player = new Player(1.5, 1.5, 1, 0, 0, -0.66);
-        this.enemies = new ArrayList<>();
-        this.floorItems = new ArrayList<>();
+        this.enemies = new CopyOnWriteArrayList<>();
+        this.floorItems = new CopyOnWriteArrayList<>();
         this.lastTime = System.nanoTime();
     }
 
@@ -41,8 +46,9 @@ public class GameEngine {
 
         new Thread(() -> {
             try {
-                // Generate a brand new map for the new level!
-                ProcessBuilder pb = new ProcessBuilder("python", "scripts/map-generator.py");
+
+                int numRooms = (currentLevel <= 4) ? 4 : 18;
+                ProcessBuilder pb = new ProcessBuilder("python", "scripts/map-generator.py", String.valueOf(numRooms));
                 Process p = pb.start();
                 p.waitFor(); 
 
@@ -66,21 +72,29 @@ public class GameEngine {
     private void spawnEntities() {
 
         boolean playerSpawned = false;
+        startPointX = -1; startPointY = -1;
+        exitPointX = -1; exitPointY = -1;
+        
         for (int x = 0; x < worldMap.length; x++) {
             for (int y = 0; y < worldMap[x].length; y++) {
                 if (worldMap[x][y] == 2) {
                     player.posX = x + 1.5; 
                     player.posY = y + 0.5;
+                    startPointX = x + 0.5;
+                    startPointY = y + 0.5;
                     playerSpawned = true;
-                    break;
+                } else if (worldMap[x][y] == 3) {
+                    exitPointX = x + 0.5;
+                    exitPointY = y + 0.5;
                 }
             }
-            if (playerSpawned) break; 
         }
 
         if (!playerSpawned) {
             player.posX = 1.5;
             player.posY = 1.5;
+            startPointX = 1.5;
+            startPointY = 1.5;
         }
 
         ArrayList<int[]> validSpawns = new ArrayList<>();
@@ -108,13 +122,40 @@ public class GameEngine {
         }
         
         floorItems.clear();
-        floorItems.add(new HealthPack(player.posX, player.posY + 1.0)); 
-        floorItems.add(new Blaster(player.posX + 1.0, player.posY)); 
+
+        int maxHealthPacks = Math.min(3, currentLevel);
+        for (int i = 0; i < maxHealthPacks; i++) {
+            if (validSpawns.isEmpty()) break;
+            int hpIndex = rand.nextInt(validSpawns.size());
+            floorItems.add(new HealthPack(validSpawns.get(hpIndex)[0] + 0.5, validSpawns.get(hpIndex)[1] + 0.5));
+            validSpawns.remove(hpIndex);
+        }
+
+        if (currentLevel == 1) {
+            if (!validSpawns.isEmpty()) {
+                int gunIndex = rand.nextInt(validSpawns.size());
+                floorItems.add(new Blaster(validSpawns.get(gunIndex)[0] + 0.5, validSpawns.get(gunIndex)[1] + 0.5));
+                validSpawns.remove(gunIndex);
+            }
+        } else if (currentLevel == 2) {
+            if (!validSpawns.isEmpty()) {
+                int gunIndex = rand.nextInt(validSpawns.size());
+                floorItems.add(new Shotgun(validSpawns.get(gunIndex)[0] + 0.5, validSpawns.get(gunIndex)[1] + 0.5));
+                validSpawns.remove(gunIndex);
+            }
+        } else if (currentLevel == 3) {
+            if (!validSpawns.isEmpty()) {
+                int gunIndex = rand.nextInt(validSpawns.size());
+                floorItems.add(new Rifle(validSpawns.get(gunIndex)[0] + 0.5, validSpawns.get(gunIndex)[1] + 0.5));
+                validSpawns.remove(gunIndex);
+            }
+        }
     }
 
     public int[][] tick(boolean w, boolean a, boolean s, boolean d) {
         long currentTime = System.nanoTime();
         double deltaTime = (currentTime - lastTime) / 1000000000.0;
+        if (deltaTime > 0.1) deltaTime = 0.1; // Prevent huge lag spikes from overshooting logic
         this.lastTime = currentTime;
 
         if (currentState == GameState.PLAYING) {
@@ -122,9 +163,14 @@ public class GameEngine {
 
             pathTimer += deltaTime;
             boolean shouldUpdatePath = false;
+            
             if (pathTimer > 0.5) {
                 shouldUpdatePath = true;
                 pathTimer = 0;
+            }
+
+            if (player.weaponCooldown > 0) {
+                player.weaponCooldown -= deltaTime;
             }
 
             for (Enemy e : enemies) {
@@ -134,9 +180,14 @@ public class GameEngine {
                 e.move(deltaTime);
 
                 double dist = Math.sqrt(Math.pow(player.posX - e.posX, 2) + Math.pow(player.posY - e.posY, 2));
-                if (dist < 0.8) {
-                    currentState = GameState.GAME_OVER;
-                    System.out.println("💀 YOU DIED!");
+                if (dist < 1.0 && e.attackCooldown <= 0) {
+                    player.health -= 10;
+                    e.attackCooldown = 1.0; 
+                    System.out.println("🩸 Enemy hits! HP drops to: " + player.health);
+                    if (player.health <= 0) {
+                        currentState = GameState.GAME_OVER;
+                        System.out.println("💀 YOU DIED!");
+                    }
                 }
             }
 

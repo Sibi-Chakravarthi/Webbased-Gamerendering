@@ -370,6 +370,12 @@ class MapGenerator:
 
 
 if __name__ == "__main__":
-    m = MapGenerator(map_size=100, num_rooms=18)
+    import sys
+    
+    num_rooms_arg = 18
+    if len(sys.argv) > 1:
+        num_rooms_arg = max(2, int(sys.argv[1]))
+
+    m = MapGenerator(map_size=100, num_rooms=num_rooms_arg)
     m.do_job()
     m.export_to_json()

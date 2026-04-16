@@ -71,6 +71,10 @@ public class Main extends JPanel implements Runnable, KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_S) s = true;
         if (e.getKeyCode() == KeyEvent.VK_D) d = true;
 
+        if (e.getKeyCode() == KeyEvent.VK_1) engine.player.activeSlot = 0;
+        if (e.getKeyCode() == KeyEvent.VK_2) engine.player.activeSlot = 1;
+        if (e.getKeyCode() == KeyEvent.VK_3) engine.player.activeSlot = 2;
+
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             if (engine.currentState == GameState.MENU || 
                 engine.currentState == GameState.GAME_OVER || 
@@ -81,9 +85,12 @@ public class Main extends JPanel implements Runnable, KeyListener {
 
         if (e.getKeyCode() == KeyEvent.VK_SPACE && engine.currentState == GameState.PLAYING) {
             IEquippable currentWeapon = engine.player.inventory[engine.player.activeSlot];
-            if (currentWeapon != null) {
+            if (currentWeapon != null && engine.player.weaponCooldown <= 0) {
                 currentWeapon.fire(engine);
-            } else {
+                if (currentWeapon instanceof items.Shotgun) engine.player.weaponCooldown = 1.0;
+                else if (currentWeapon instanceof items.Rifle) engine.player.weaponCooldown = 0.15;
+                else engine.player.weaponCooldown = 0.6;
+            } else if (currentWeapon == null) {
                 System.out.println("❌ *Click* Your hands are empty!");
             }
         }

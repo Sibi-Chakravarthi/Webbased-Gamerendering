@@ -8,6 +8,12 @@ import java.util.PriorityQueue;
 public class Enemy extends Entity {
 
     public int health = 100;
+
+    public int currentFrame = 0;
+    private double animTimer = 0;
+    public double attackCooldown = 0.0;
+    private final double TIME_PER_FRAME = 0.2; 
+    private final int TOTAL_FRAMES = 4;
     
     private double moveSpeed = 2.0;
     private List<Node> currentPath = new ArrayList<>();
@@ -17,8 +23,8 @@ public class Enemy extends Entity {
     }
 
     public void updatePath(int[][] worldMap, int targetX, int targetY) {
-        int startX = (int) this.posX;
-        int startY = (int) this.posY;
+        int startX = Math.max(0, Math.min(worldMap.length - 1, (int) this.posX));
+        int startY = Math.max(0, Math.min(worldMap[0].length - 1, (int) this.posY));
 
         PriorityQueue<Node> openSet = new PriorityQueue<>();
         boolean[][] closedSet = new boolean[worldMap.length][worldMap[0].length];
@@ -67,8 +73,20 @@ public class Enemy extends Entity {
             this.posX += (dirX / distance) * moveSpeed * deltaTime;
             this.posY += (dirY / distance) * moveSpeed * deltaTime;
         } else {
-
             currentPath.remove(0); 
+        }
+
+        animTimer += deltaTime;
+        if (animTimer >= TIME_PER_FRAME) {
+            animTimer = 0;
+            currentFrame++;
+            if (currentFrame >= TOTAL_FRAMES) {
+                currentFrame = 0;
+            }
+        }
+        
+        if (attackCooldown > 0) {
+            attackCooldown -= deltaTime;
         }
     }
 
