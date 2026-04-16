@@ -68,20 +68,18 @@ java -cp src core.Main
 ```
 
 ### Controls
-* **W** - Move forward
-* **A** - Rotate left
-* **S** - Move backward
-* **D** - Rotate right
-* **SPACE** - Fire equipped weapon
+* **W A S D** - Move around and rotate (Smooth fluid rotation controls)
+* **SPACE** - Fire currently equipped weapon
+* **1, 2, 3** - Swap active weapon inventory slots
 * **ENTER** - Start game / Restart after death/victory
 * **ESC** - Exit (via window close button)
 
 ### Game Mechanics
-* 🟢 Collect **health packs** (green sprites) to restore HP
-* 🔵 Collect **weapons** (cyan sprites) to equip in inventory (max 3 slots)
-* 🔴 Avoid **enemies** (red sprites) - contact causes instant death
-* 🟩 Reach the **exit** (green wall) to progress to the next level
-* Each level spawns more enemies (level count = enemy count)
+* 🟢 **Medkits**: Collect health packs to restore HP and universally refill all weapon ammunition pools by 50!
+* 🔵 **Weapons**: Collect weapons (Blaster, Shotgun, Rifle) to equip in your inventory (max 3 slots). Picking up duplicate weapons automatically extracts and stacks the ammo.  
+* 🔴 **Combat**: Enemies swarm players using proper A* routing. Survive by balancing active gun cooldowns, muzzle flashes, and spacing. Player kill-count is tracked natively!
+* 🟩 **Progression**: Reach the exit (green wall portal) to progress to the next wave.
+* **Wave System**: Each floor spawns increasingly more challenging clusters of enemies.
 
 ## 📁 Project Structure
 ```
@@ -115,29 +113,27 @@ RayForge/
 
 ## 🎯 Technical Deep Dive
 
-### Raycasting Engine
-The `Raycaster.java` implements the DDA (Digital Differential Analyzer) algorithm:
-1. For each screen column (1920 rays), calculate ray direction based on camera plane
-2. Step through the 2D grid using DDA until hitting a wall (`worldMap[x][y] > 0`)
-3. Calculate perpendicular wall distance to prevent fisheye distortion
-4. Store depth in Z-buffer for proper sprite depth sorting
-5. Return wall heights and types for the renderer
+### Advanced Raycasting & Rendering Pipeline
+The `Raycaster.java` implements an upgraded DDA (Digital Differential Analyzer) algorithm:
+1. Calculates ray intersections on the 2D plane based on dynamic camera bounds.
+2. Evaluates the sub-block coordinate intersection (`wallX`) to perform accurate UV texture mapping seamlessly!
+3. Computes floor-casting and panoramic sky-casting logic for environmental fidelity.
+4. Generates a robust Z-buffer depth map exported straight to the sprite rendering core.
 
-**Key Optimization:** Only calculates grid intersections, not every pixel along the ray.
+**Key Optimization:** Only calculates grid intersections, not every pixel natively along the ray.
 
 ### A* Pathfinding
 Enemies use A* in `Enemy.java`:
 - **Heuristic:** Manhattan distance (optimal for grid-based 4-directional movement)
-- **Update Frequency:** Recalculates path every 0.5 seconds (performance optimization)
+- **Update Frequency:** Recalculates path incrementally based on internal cycle timers to sustain performance
 - **Data Structure:** Priority queue (`PriorityQueue<Node>`) for efficient node selection
-- **Path Following:** Smooth interpolation between grid nodes
 
-### Sprite Rendering
-`Renderer.drawSingleSprite()` implements billboarding:
-1. Transform sprite world position to camera space
-2. Project to screen space using camera plane inverse
-3. Depth-test against Z-buffer from raycasting
-4. Draw vertical strips for visible portions
+### Sprite Rendering & Depth Sorting
+`Renderer.drawSprites()` implements a robust billboarding technique:
+1. Stores all environment sprites (loot & enemies) alongside their relative geometric distances via an internal `SpriteInfo` tracker.
+2. Sorts sprites recursively in descending order (Painter's algorithm) ensuring distant entities render correctly behind close entities natively fixing overlap rendering artifacts.
+3. Scales projections dramatically based mathematically against Z-buffer clipping thresholds.
+4. Maps texture alpha layers logically blending UI elements like crosshairs, recoil punchbacks, and dynamic minimap overlays.
 
 ### Procedural Generation
 `map-generator.py` creates mazes using:
@@ -182,29 +178,25 @@ Edit `scripts/map-generator.py`:
 - **Algorithm:** Replace `generate_base_branch()` with different maze algorithms (DFS, Prim's, Kruskal's, etc.)
 
 ## 📊 Performance Metrics
-* **Resolution:** 1920x1080
-* **Target FPS:** 60 (capped at 16ms per frame)
-* **Ray Count:** 1920 rays per frame
-* **Map Size:** 100x100 grid (10,000 tiles)
-* **Rendering:** CPU-based (Java2D BufferedImage)
-* **Pathfinding:** A* recalculated at 2Hz per enemy
+* **Resolution:** Dynamic Fullscreen (auto-scales via Java Toolkit natively)
+* **Target FPS:** 60 FPS Engine Clock (capped at ~16ms per logic tick to prevent physics glitches)
+* **Ray Count:** Adapts seamlessly to the horizontal width of your monitor resolution.
+* **Rendering:** CPU-based with fully parsed JSON Map scaling, Textured AABB rendering, floor/sky mapping, and Z-buffered Sprite Depth sorting.
+* **Pathfinding:** A* recalculated dynamically per enemy cluster based on cycle timers.
 
 ## 🐛 Known Limitations
-* Python must be in system PATH for map generation
-* Maps are regenerated each level (intentional design)
-* Sprite rendering is unscaled (fixed size)
-* No texture mapping (solid colors only)
-* Single-threaded rendering (no GPU acceleration)
+* Python must be in system PATH for procedural map generation
+* Single-threaded rendering constraints (no active GPU hardware acceleration contexts utilized intentionally)
+* Maps are regenerated entirely each transition (forming the primary wave scaling mechanic seamlessly)
 
 ## 🚧 Future Enhancements
-- [ ] Texture mapping for walls
-- [ ] Animated sprites
-- [ ] Sound effects and music
-- [ ] Save/load system for progress
-- [ ] Multiple weapon slots with hotkey switching
-- [ ] Boss enemies with advanced AI
-- [ ] Lighting and shadows
-- [ ] Multiplayer support
+- [ ] Animated enemy/weapon state machines (Reloading sequences)
+- [ ] Sound effects and spatial MIDI music integration
+- [ ] Save/load system for progress serialization
+- [ ] Boss enemies with advanced behavior trees
+- [ ] Verticality (jump/crouch mechanical height displacements)
+- [ ] Expand minimap bounds scaling parameters
+- [ ] Multiplayer networking pipeline
 
 ## 📜 License
 This project is open source and available for educational purposes.
