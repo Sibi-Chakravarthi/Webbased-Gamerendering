@@ -1,211 +1,116 @@
-# 🚀 RayForge 3D Engine
+<div align="center">
 
-A custom-built, native desktop 3D game engine written from scratch in Java, utilizing Raycasting mathematics (similar to Wolfenstein 3D). It features a completely decoupled architecture, procedural map generation via Python, and native graphics rendering via Java Swing.
+# 🚀 RayForge Engine
 
-## 🧠 Academic Core Concepts
+**A highly-optimized, procedural 2.5D Raycasting Engine built natively in Java.**
 
-This project was built to demonstrate advanced proficiency in two core computer science domains:
+[![Java 17+](https://img.shields.io/badge/Java-17%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
+[![Python 3](https://img.shields.io/badge/Python-3-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Architectural Pattern](https://img.shields.io/badge/Pattern-Game_Loop-4B32C3?style=for-the-badge)](#)
 
-### 1. Object-Oriented Programming (OOP)
-* **Inheritance & Interfaces:** The rendering loop (`Main.java`) utilizes Java Swing by extending `JPanel` and implementing `Runnable` and `KeyListener` for multi-threaded, hardware-accelerated rendering and input processing.
-* **Encapsulation & State Management:** The engine follows a strict Game Manager pattern. `GameEngine.java` encapsulates the world state, ensuring the player math, raycasting math, and rendering loop are decoupled and independently testable.
-* **Process Delegation:** The Java engine acts as a master controller, using `ProcessBuilder` to execute external OS-level scripts (Python) and handle asynchronous thread waiting.
+*RayForge utilizes classic 90s DOOM-style pseudo-3D mathematics pushed to a modern engine logic standard. No external GPU libraries. Pure CPU computational power mapped directly via Java2D Data Buffers.*
 
-### 2. Data Structures & Algorithms (DSA)
-* **Procedural Generation (DFS/Random Walk):** `map-generator.py` utilizes algorithm-driven random walks to procedurally carve out 100x100 2D mazes, ensuring a guaranteed valid path between the generated entrance and exit.
-* **Algorithmic Optimizations:** The raycaster relies on the **Digital Differential Analyzer (DDA)** algorithm. Instead of checking every pixel, DDA rapidly calculates intersection points on the 2D grid, making it lightweight enough to render 1920x1080 rays at 60 FPS purely on the CPU.
-* **Axis-Aligned Bounding Box (AABB) Collision:** The `Player` class implements AABB math against the 2D `int[][]` map array, utilizing vector projection (`Math.signum`) to slide smoothly against walls without clipping through corners.
+</div>
 
-## 🛠️ Tech Stack
-* **Frontend/Renderer:** Native Java (`javax.swing.*`, `java.awt.Graphics`)
-* **Backend Engine:** Java 17+
-* **Procedural Map Generator:** Python 3.x
-* **Data Transfer:** JSON (bridging Python algorithms to Java logic)
+## ✨ Key Features
+- **True Texture Mapping**: Ray-intersections query precise sub-block horizontal planes calculating strict 2D-to-UV bounds mappings. Includes Floor-Casting and Panoramic Box geometries.
+- **Dynamic Z-Buffering**: Advanced Painter’s Algorithm mapping rendering depths dynamically ensuring precise sprite overlap without collision artifacts. 
+- **A* Pathfinding Artificial Intelligence**: Real-time Manhattan distance routing recalculated asynchronously mapped across a dynamic Grid space. 
+- **Python Procedural Generation Bridge**: The Java core dispatches an executable pipeline requesting unique JSON 100x100 architectural grids directly mapped out via internal python walker-node functions per wave layer.
+- **Fully Weaponized Arsenals**: Diverse, modular implementations utilizing `interfaces` for multi-slotted DOOM combat structures (Blasters, Shotguns, Rifles) featuring spread checks, ammo stacking logic, active Crosshairs, HUD updates, recoil displacement modifiers, and tracking loops.
+- **Dynamic Window Resizing Environment**: Natively scales up into any Desktop layout stripping borders for pure immersive edge-to-edge tracking.
 
-## 🎮 How to Run
+---
 
-### Prerequisites
-* Ensure you have the Java Development Kit (JDK) installed (Java 17 or higher recommended).
-* Ensure Python 3 is installed and added to your system PATH.
+## 🎮 How to Play
 
-### Compilation & Execution
+### Installation & Execution
+RayForge Engine uses **Java 17+** natively and relies on **Python 3** purely for backend procedural generation hooks. 
 
-#### Option 1: Manual Compilation
-1. Clone the repository and navigate to the project root.
-2. Compile all Java classes:
-   ```bash
-   cd src
-   javac core/*.java entities/*.java graphics/*.java world/*.java items/*.java interfaces/*.java
-   ```
-3. Run the game from the project root:
-   ```bash
-   java -cp src core.Main
-   ```
-
-#### Option 2: Using the Build Script (Recommended)
-Create a `build.sh` script in the project root:
+**Option 1 - Manual Launch:**
+Navigate inside the root project directory and compile straight from the source:
 ```bash
-#!/bin/bash
 cd src
 javac core/*.java entities/*.java graphics/*.java world/*.java items/*.java interfaces/*.java
 cd ..
 java -cp src core.Main
 ```
-Make it executable and run:
-```bash
-chmod +x build.sh
-./build.sh
-```
 
-#### For Windows Users
-Create `build.bat`:
-```batch
-@echo off
-cd src
-javac core\*.java entities\*.java graphics\*.java world\*.java items\*.java interfaces\*.java
-cd ..
-java -cp src core.Main
-```
+### Controls & Navigation
+RayForge tracks fluid continuous keyboard states.
+* **Movement:** `[W] [A] [S] [D]` parameters standard routing and rotation.
+* **Attack:** `[SPACEBAR]` triggers continuous fire depending on active weapon firing thresholds. 
+* **Swap Weapons:** `[1] [2] [3]` quick switches rendering/inventory states organically.
+* **Flow State:** `[ENTER]` handles dynamic interactions (Starting generation processing / Advancing after Victory / Respawning).
 
-### Controls
-* **W A S D** - Move around and rotate (Smooth fluid rotation controls)
-* **SPACE** - Fire currently equipped weapon
-* **1, 2, 3** - Swap active weapon inventory slots
-* **ENTER** - Start game / Restart after death/victory
-* **ESC** - Exit (via window close button)
+*Survive the wave thresholds, scavenge weapons/ammo, and reach the Green Portal exit to force-spawn deeper wave complexes incrementally.*
 
-### Game Mechanics
-* 🟢 **Medkits**: Collect health packs to restore HP and universally refill all weapon ammunition pools by 50!
-* 🔵 **Weapons**: Collect weapons (Blaster, Shotgun, Rifle) to equip in your inventory (max 3 slots). Picking up duplicate weapons automatically extracts and stacks the ammo.  
-* 🔴 **Combat**: Enemies swarm players using proper A* routing. Survive by balancing active gun cooldowns, muzzle flashes, and spacing. Player kill-count is tracked natively!
-* 🟩 **Progression**: Reach the exit (green wall portal) to progress to the next wave.
-* **Wave System**: Each floor spawns increasingly more challenging clusters of enemies.
+---
 
-## 📁 Project Structure
-```
-RayForge/
+## 📂 Architecture & File Structure
+
+The project was explicitly decoupled isolating Graphical projections from rigid body logical matrices guaranteeing clean scaling parameters continuously. 
+
+```text
+RayForge-Engine/
 ├── src/
-│   ├── core/              # Engine loop and state management
-│   │   ├── Main.java      # Entry point, rendering thread, input handling
-│   │   ├── GameEngine.java # Game logic coordinator, entity spawning
-│   │   └── GameState.java # State enum (MENU, PLAYING, GAME_OVER, etc.)
-│   ├── entities/          # Game objects
-│   │   ├── Entity.java    # Base entity class with position
-│   │   ├── Player.java    # Player with AABB collision & inventory
-│   │   ├── Enemy.java     # A* pathfinding AI enemy
-│   │   └── Item.java      # Base collectible item class
-│   ├── graphics/          # Rendering pipeline
-│   │   ├── Raycaster.java # DDA raycasting algorithm
-│   │   └── Renderer.java  # Screen drawing, sprites, HUD, minimap
-│   ├── world/             # Map loading
-│   │   └── MapLoader.java # JSON map parser with boundary enforcement
-│   ├── interfaces/        # Behavior contracts
-│   │   ├── IConsumable.java # Items that can be consumed
-│   │   └── IEquippable.java # Items that can be equipped as weapons
-│   └── items/             # Concrete item implementations
-│       ├── HealthPack.java # Restores player health
-│       └── Blaster.java   # Ranged weapon with aim cone
+│   ├── core/                        # Engine Loops & State Dispatchers
+│   │   ├── Main.java                # Hardware Interface & Frame Processing KeyListeners
+│   │   ├── GameEngine.java          # World Master State encapsulated configurations
+│   │   └── GameState.java           # Internal enum flags defining global render views
+│   │ 
+│   ├── graphics/                    # Rendering Pipelines 
+│   │   ├── Raycaster.java           # DDA (Digital Differential Analyzer) mathematical engine
+│   │   ├── Renderer.java            # HUD, Texture Scaling, MiniMap, & Painter's sorting logic
+│   │   └── Texture.java             # Low-level ImageIO Pixel Array extractors
+│   │
+│   ├── entities/                    # AABB collision bodies
+│   │   ├── Entity.java              # Standard Geometric inheritance setup 
+│   │   ├── Player.java              # Complex collision routing / inventory matrices
+│   │   ├── Enemy.java               # Advanced A* heuristic queue-tree nodes
+│   │   └── Item.java                # Geometric anchor point bounds for ground items
+│   │
+│   ├── items/                       # Polymorphic item blueprints
+│   │   ├── Blaster.java             # Base accurate hitrate hitscan mechanics
+│   │   ├── Shotgun.java             # Wide-array piercing dispersion mechanics
+│   │   ├── Rifle.java               # Low-cool down automated fire logic loops
+│   │   └── HealthPack.java          # Multi-consumable object returning Player HP/Ammos
+│   │
+│   ├── interfaces/                  # Strict contractual rulesets 
+│   │   ├── IConsumable.java         # Handlers overriding player state loops 
+│   │   └── IEquippable.java         # Enforcer methods isolating custom gun logics 
+│   │
+│   └── world/                       # JSON bridging mechanisms
+│       └── MapLoader.java           # Array parser converting generated coordinates
+│
 ├── scripts/
-│   └── map-generator.py   # Procedural maze generation
-├── .gitignore
-└── README.md
+│   └── map-generator.py             # Python DFS traversal carving JSON boundaries
+│
+└── res/
+    └── textures/                    # Isolated Native Resource Packages handling `.png` conversions
 ```
 
-## 🎯 Technical Deep Dive
+---
 
-### Advanced Raycasting & Rendering Pipeline
-The `Raycaster.java` implements an upgraded DDA (Digital Differential Analyzer) algorithm:
-1. Calculates ray intersections on the 2D plane based on dynamic camera bounds.
-2. Evaluates the sub-block coordinate intersection (`wallX`) to perform accurate UV texture mapping seamlessly!
-3. Computes floor-casting and panoramic sky-casting logic for environmental fidelity.
-4. Generates a robust Z-buffer depth map exported straight to the sprite rendering core.
+## 🔧 Technical Masterclass Pipeline
 
-**Key Optimization:** Only calculates grid intersections, not every pixel natively along the ray.
+### 1. The DDA Algorithm (`Raycaster.java`)
+Unlike brute force engines checking every microscopic coordinate vector to identify walls, RayForge traces rays along explicit grid bound intercepts scaling directly against mathematical delta increments:
+- Traces screen bounds exactly parallel across dynamically acquired camera sizes native to the user's desktop view-ports.
+- Intercept depths are mapped cleanly into a `Z-Buffer` float array handling distortion calculations mathematically to defeat standard "Fish-Eye" phenomena intrinsically. 
 
-### A* Pathfinding
-Enemies use A* in `Enemy.java`:
-- **Heuristic:** Manhattan distance (optimal for grid-based 4-directional movement)
-- **Update Frequency:** Recalculates path incrementally based on internal cycle timers to sustain performance
-- **Data Structure:** Priority queue (`PriorityQueue<Node>`) for efficient node selection
+### 2. Depth Buffering (`Renderer.java`)
+Instead of allowing entities to "clip" dynamically across arrays as standard 2D render loops frequently mistake, all visible Sprites are evaluated per-frame, encapsulated into temporary `SpriteInfo` structures checking relative distances to the Player plane, and inherently sorted descending to ensure back-rendered sprites never draw atop visually closer targets.
 
-### Sprite Rendering & Depth Sorting
-`Renderer.drawSprites()` implements a robust billboarding technique:
-1. Stores all environment sprites (loot & enemies) alongside their relative geometric distances via an internal `SpriteInfo` tracker.
-2. Sorts sprites recursively in descending order (Painter's algorithm) ensuring distant entities render correctly behind close entities natively fixing overlap rendering artifacts.
-3. Scales projections dramatically based mathematically against Z-buffer clipping thresholds.
-4. Maps texture alpha layers logically blending UI elements like crosshairs, recoil punchbacks, and dynamic minimap overlays.
+### 3. A* Search Logic (`Enemy.java`)
+Pathfinding prevents brute force looping. Grid calculations are parsed natively using prioritized queuing algorithms searching lowest possible `F-Costs` globally. The heuristic enforces Manhattan-distance calculation blocks bypassing diagonal logic mapping clean grid-based routes incrementally across wave timers. 
 
-### Procedural Generation
-`map-generator.py` creates mazes using:
-- **Algorithm:** Random walk with gradual width expansion
-- **Start/Exit:** Entrance (tile type 2) at top edge, exit (tile type 3) at bottom
-- **Path Guarantee:** Algorithm ensures continuous path from start to exit
-- **Width Control:** Gradually expands corridor width as it approaches exit
 
-**Map Tile Types:**
-- `0` = Empty walkable space
-- `1` = Wall
-- `2` = Entrance spawn point
-- `3` = Exit portal
+## 📋 Known Constraints
+* Due to isolated backend logic parsing, Python 3 is absolutely mandatory within the OS Path configurations before executing runtime.
+* To achieve pure unadulterated Native CPU rendering parameters, modern graphical hardware accelerations have been expressly ignored keeping it tightly encapsulated in standard `AWT/Swing` configurations.
 
-## 🔧 Extending the Engine
-
-### Adding New Weapons
-1. Create a new class in `items/` that extends `Item` and implements `IEquippable`
-2. Implement the `fire(GameEngine engine)` method with your weapon logic
-3. Spawn it in `GameEngine.spawnEntities()`:
-   ```java
-   floorItems.add(new YourWeapon(x, y));
-   ```
-
-**Example:** The `Blaster.java` uses dot product for aim cone detection.
-
-### Adding New Consumables
-1. Create a class extending `Item` and implementing `IConsumable`
-2. Implement `consume(Player player)` method
-3. Set `isCollected = true` to mark for removal
-4. Add to `floorItems` list in `GameEngine`
-
-### Adding New Enemy Types
-1. Extend `Enemy.java` or create a new class extending `Entity`
-2. Implement custom movement behavior (override `move()` method)
-3. Spawn in `GameEngine.spawnEntities()` loop
-
-### Modifying Map Generation
-Edit `scripts/map-generator.py`:
-- **Map Size:** Change `map_size` parameter (currently 100)
-- **Corridor Width:** Adjust `branch_thickness` parameter (currently 7)
-- **Algorithm:** Replace `generate_base_branch()` with different maze algorithms (DFS, Prim's, Kruskal's, etc.)
-
-## 📊 Performance Metrics
-* **Resolution:** Dynamic Fullscreen (auto-scales via Java Toolkit natively)
-* **Target FPS:** 60 FPS Engine Clock (capped at ~16ms per logic tick to prevent physics glitches)
-* **Ray Count:** Adapts seamlessly to the horizontal width of your monitor resolution.
-* **Rendering:** CPU-based with fully parsed JSON Map scaling, Textured AABB rendering, floor/sky mapping, and Z-buffered Sprite Depth sorting.
-* **Pathfinding:** A* recalculated dynamically per enemy cluster based on cycle timers.
-
-## 🐛 Known Limitations
-* Python must be in system PATH for procedural map generation
-* Single-threaded rendering constraints (no active GPU hardware acceleration contexts utilized intentionally)
-* Maps are regenerated entirely each transition (forming the primary wave scaling mechanic seamlessly)
-
-## 🚧 Future Enhancements
-- [ ] Animated enemy/weapon state machines (Reloading sequences)
-- [ ] Sound effects and spatial MIDI music integration
-- [ ] Save/load system for progress serialization
-- [ ] Boss enemies with advanced behavior trees
-- [ ] Verticality (jump/crouch mechanical height displacements)
-- [ ] Expand minimap bounds scaling parameters
-- [ ] Multiplayer networking pipeline
-
-## 📜 License
-This project is open source and available for educational purposes.
-
-## 🙏 Acknowledgments
-Built as a demonstration of:
-- Computer graphics (raycasting)
-- Algorithm design (A*, procedural generation)
-- Software architecture (OOP patterns)
-- System integration (Java ↔ Python)
-
-Inspired by Wolfenstein 3D (id Software, 1992) and modern raycasting tutorials.
+---
+<div align="center">
+<i>Forged meticulously for foundational Computer Science algorithm implementations.</i>
+</div>
