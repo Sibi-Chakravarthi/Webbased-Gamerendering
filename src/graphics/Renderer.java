@@ -204,6 +204,28 @@ public class Renderer {
 
         g.setColor(Color.RED);
         g.fillRect(px - 1, py - 1, 3, 3); 
+
+        if (engine.enemies != null) {
+            g.setColor(Color.MAGENTA);
+            for (entities.Enemy e : engine.enemies) {
+                if (e.health > 0) {
+                    int ex = (mapHeight - 1 - (int) e.posY) * scale;
+                    int ey = (mapWidth - 1 - (int) e.posX) * scale;
+                    g.fillRect(ex - 1, ey - 1, 3, 3);
+                }
+            }
+        }
+
+        if (engine.floorItems != null) {
+            g.setColor(Color.CYAN);
+            for (entities.Item item : engine.floorItems) {
+                if (!item.isCollected && item instanceof interfaces.IEquippable) {
+                    int ix = (mapHeight - 1 - (int) item.posY) * scale;
+                    int iy = (mapWidth - 1 - (int) item.posX) * scale;
+                    g.fillRect(ix - 1, iy - 1, 3, 3);
+                }
+            }
+        }
     }
 
     private void drawHUD(Graphics g, GameEngine engine) {

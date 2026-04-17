@@ -9,3 +9,12 @@ src/entities/Enemy.class
 src/core/Main.class
 src/core/GameState.class
 src/core/GameEngine.class
+src/graphics/Renderer$SpriteInfo.class
+src/entities/Item.class
+src/graphics/Texture.class
+src/interfaces/IConsumable.class
+src/interfaces/IEquippable.class
+src/items/Blaster.class
+src/items/HealthPack.class
+src/items/Rifle.class
+src/items/Shotgun.class
