@@ -27,7 +27,7 @@ public class Rifle extends Item implements IEquippable {
     public void fire(GameEngine engine) {
         if (ammo <= 0) return;
         ammo--;
-        System.out.println("🔫 RAT-TAT-TAT! Fired the Rifle! Ammo left: " + ammo);
+        System.out.println("RAT-TAT-TAT! Fired the Rifle! Ammo left: " + ammo);
 
         Enemy closestEnemy = null;
         double minDistance = Double.MAX_VALUE;
@@ -41,7 +41,7 @@ public class Rifle extends Item implements IEquippable {
             double ny = dy / distance;
             double dotProduct = (nx * engine.player.dirX) + (ny * engine.player.dirY);
 
-            // Long range, narrow cone
+           
             if (distance < 20.0 && dotProduct > 0.98) {
                 if (distance < minDistance) {
                     minDistance = distance;
@@ -52,15 +52,15 @@ public class Rifle extends Item implements IEquippable {
 
         if (closestEnemy != null) {
             closestEnemy.health -= 25; // Lower damage per shot, but high fire rate
-            System.out.println("🎯 HIT! Enemy health drops to " + closestEnemy.health);
+            System.out.println("HIT! Enemy health drops to " + closestEnemy.health);
             
             if (closestEnemy.health <= 0) {
-                System.out.println("💀 Enemy Defeated!");
+                System.out.println("Enemy Defeated!");
                 engine.enemies.remove(closestEnemy);
                 engine.player.killCount++;
             }
         } else {
-            System.out.println("💨 Missed!");
+            System.out.println("Missed!");
         }
     }
 }

@@ -45,17 +45,17 @@ public class MapLoader {
                 }
             }
             
-            System.out.println("✅ Successfully loaded map of size: " + numRows + "x" + numCols);
+            System.out.println("Successfully loaded map of size: " + numRows + "x" + numCols);
             return map;
 
         } catch (IOException e) {
 
-            System.out.println("❌ Could not find the file: " + filePath);
+            System.out.println("Could not find the file: " + filePath);
             e.printStackTrace();
 
         } catch (Exception e) {
 
-            System.out.println("❌ Error parsing the map data!");
+            System.out.println("Error parsing the map data!");
             e.printStackTrace();
 
         }

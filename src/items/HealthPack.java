@@ -24,6 +24,6 @@ public class HealthPack extends Item implements IConsumable {
         }
         
         this.isCollected = true;
-        System.out.println("🩹 Picked up Health Pack & Ammo! Health is now: " + player.health);
+        System.out.println("Picked up Health Pack & Ammo! Health is now: " + player.health);
     }
 }

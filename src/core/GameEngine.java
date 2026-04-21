@@ -184,10 +184,10 @@ public class GameEngine {
                 if (dist < 1.0 && e.attackCooldown <= 0) {
                     player.health -= 10;
                     e.attackCooldown = 1.0; 
-                    System.out.println("🩸 Enemy hits! HP drops to: " + player.health);
+                    System.out.println("Enemy hits! HP drops to: " + player.health);
                     if (player.health <= 0) {
                         currentState = GameState.GAME_OVER;
-                        System.out.println("💀 YOU DIED!");
+                        System.out.println("YOU DIED!");
                     }
                 }
             }
@@ -210,7 +210,7 @@ public class GameEngine {
 
             if (worldMap[(int) player.posX][(int) player.posY] == 3) {
                 currentLevel++;
-                System.out.println("🎉 ESCAPED! Loading Level " + currentLevel + "...");
+                System.out.println("ESCAPED! Loading Level " + currentLevel + "...");
                 reset();
             }
         }

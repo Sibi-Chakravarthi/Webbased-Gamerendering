@@ -69,10 +69,10 @@ public class Main extends JPanel implements Runnable, KeyListener {
                     else if (currentWeapon instanceof items.Rifle) engine.player.weaponCooldown = 0.15;
                     else engine.player.weaponCooldown = 0.6;
                 } else if (currentWeapon != null && engine.player.weaponCooldown <= 0 && currentWeapon.getAmmo() <= 0) {
-                    System.out.println("❌ *Click* Out of ammo!");
+                    System.out.println("Out of ammo!");
                     engine.player.weaponCooldown = 0.25;
                 } else if (currentWeapon == null && engine.player.weaponCooldown <= 0) {
-                    System.out.println("❌ *Click* Your hands are empty!");
+                    System.out.println("Your hands are empty!");
                     engine.player.weaponCooldown = 0.6;
                 }
             }

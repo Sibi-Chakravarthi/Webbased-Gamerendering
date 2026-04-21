@@ -27,7 +27,8 @@ public class Player extends Entity {
 
     public void move(boolean w, boolean a, boolean s, boolean d, int[][] worldMap, double deltaTime) {
         double moveSpeed = 5.0 * deltaTime;
-        double rotSpeed = 1.75 * deltaTime;
+        double rotSpeed = 1.75 *
+                deltaTime;
 
         double radius = 0.25;
 
@@ -82,7 +83,7 @@ public class Player extends Entity {
         for (int i = 0; i < inventory.length; i++) {
             if (inventory[i] != null && inventory[i].getClass().equals(weapon.getClass())) {
                 inventory[i].addAmmo(weapon.getAmmo());
-                System.out.println("🎒 Picked up ammo for " + weapon.getClass().getSimpleName());
+                System.out.println("Picked up ammo for " + weapon.getClass().getSimpleName());
                 return true;
             }
         }
@@ -90,11 +91,11 @@ public class Player extends Entity {
         for (int i = 0; i < inventory.length; i++) {
             if (inventory[i] == null) {
                 inventory[i] = weapon;
-                System.out.println("🎒 Picked up weapon into Slot " + (i + 1));
+                System.out.println("Picked up weapon into Slot " + (i + 1));
                 return true;
             }
         }
-        System.out.println("⚠️ Inventory Full! Left weapon on the floor.");
+        System.out.println("Inventory Full! Left weapon on the floor.");
         return false;
     }
 

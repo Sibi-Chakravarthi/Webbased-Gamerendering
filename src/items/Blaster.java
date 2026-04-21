@@ -27,7 +27,7 @@ public class Blaster extends Item implements IEquippable {
     public void fire(GameEngine engine) {
         if (ammo <= 0) return;
         ammo--;
-        System.out.println("🔫 PEW! Fired the Blaster! Ammo left: " + ammo);
+        System.out.println("PEW! Fired the Blaster! Ammo left: " + ammo);
 
         Enemy closestEnemy = null;
         double minDistance = Double.MAX_VALUE;
@@ -51,15 +51,15 @@ public class Blaster extends Item implements IEquippable {
 
         if (closestEnemy != null) {
             closestEnemy.health -= 50;
-            System.out.println("🎯 HIT! Enemy health drops to " + closestEnemy.health);
+            System.out.println(" HIT! Enemy health drops to " + closestEnemy.health);
             
             if (closestEnemy.health <= 0) {
-                System.out.println("💀 Enemy Defeated!");
+                System.out.println("Enemy Defeated!");
                 engine.enemies.remove(closestEnemy);
                 engine.player.killCount++;
             }
         } else {
-            System.out.println("💨 Missed!");
+            System.out.println("Missed!");
         }
     }
 }

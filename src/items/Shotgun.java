@@ -27,11 +27,10 @@ public class Shotgun extends Item implements IEquippable {
     public void fire(GameEngine engine) {
         if (ammo <= 0) return;
         ammo--;
-        System.out.println("💥 BOOM! Fired the Shotgun! Ammo left: " + ammo);
+        System.out.println("BOOM! Fired the Shotgun! Ammo left: " + ammo);
 
         boolean hitSomething = false;
 
-        // Shotgun hits all enemies within a wide short cone (scatter shot)
         for (int i = engine.enemies.size() - 1; i >= 0; i--) {
             Enemy e = engine.enemies.get(i);
             
@@ -43,14 +42,13 @@ public class Shotgun extends Item implements IEquippable {
             double ny = dy / distance;
             double dotProduct = (nx * engine.player.dirX) + (ny * engine.player.dirY);
 
-            // Shorter range but much wider cone
             if (distance < 5.0 && dotProduct > 0.85) {
                 e.health -= 100;
                 hitSomething = true;
-                System.out.println("🎯 BLAST! Enemy health drops to " + e.health);
+                System.out.println("BLAST! Enemy health drops to " + e.health);
                 
                 if (e.health <= 0) {
-                    System.out.println("💀 Enemy Obliterated!");
+                    System.out.println("Enemy Obliterated!");
                     engine.enemies.remove(i);
                     engine.player.killCount++;
                 }
@@ -58,7 +56,7 @@ public class Shotgun extends Item implements IEquippable {
         }
 
         if (!hitSomething) {
-            System.out.println("💨 Missed!");
+            System.out.println("Missed!");
         }
     }
 }

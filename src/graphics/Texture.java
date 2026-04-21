@@ -17,10 +17,10 @@ public class Texture {
             this.pixels = new int[width * height];
 
             image.getRGB(0, 0, width, height, pixels, 0, width);
-            System.out.println("🖼️ Successfully loaded texture: " + filepath);
+            System.out.println("Successfully loaded texture: " + filepath);
 
         } catch (IOException e) {
-            System.err.println("❌ CRITICAL: Could not load texture at " + filepath);
+            System.err.println("CRITICAL: Could not load texture at " + filepath);
             e.printStackTrace();
             this.width = 64;
             this.height = 64;

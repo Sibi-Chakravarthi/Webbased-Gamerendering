@@ -2,7 +2,6 @@ package graphics;
 
 import core.GameEngine;
 import core.GameState;
-import entities.Item;
 import interfaces.IEquippable;
 
 import java.awt.Color;
@@ -40,67 +39,67 @@ public class Renderer {
         try {
             gunSprite = ImageIO.read(new File("res/textures/gun.png"));
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/gun.png!");
+            System.out.println(" Could not find res/textures/gun.png!");
         }
         try {
             shotgunSprite = ImageIO.read(new File("res/textures/shotgun.png"));
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/shotgun.png!");
+            System.out.println(" Could not find res/textures/shotgun.png!");
         }
         try {
             rifleSprite = ImageIO.read(new File("res/textures/rifle.png"));
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/rifle.png!");
+            System.out.println(" Could not find res/textures/rifle.png!");
         }
         try {
             enemySprite = new Texture("res/textures/enemy.png");
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/enemy.png!");
+            System.out.println(" Could not find res/textures/enemy.png!");
         }
         try {
             wallTexture = new Texture("res/textures/wall.png");
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/wall.png!");
+            System.out.println(" Could not find res/textures/wall.png!");
         }
         try {
             startTexture = new Texture("res/textures/start.png");
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/start.png!");
+            System.out.println(" Could not find res/textures/start.png!");
         }
         try {
             exitTexture = new Texture("res/textures/exit.png");
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/exit.png!");
+            System.out.println(" Could not find res/textures/exit.png!");
         }
         try {
             skyTexture = new Texture("res/textures/sky.png");
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/sky.png!");
+            System.out.println(" Could not find res/textures/sky.png!");
         }
         try {
             floorTexture = new Texture("res/textures/floor.png");
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/floor.png!");
+            System.out.println(" Could not find res/textures/floor.png!");
         }
         try {
             gunPickupTexture = new Texture("res/textures/gun_pickup.png");
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/gun_pickup.png!");
+            System.out.println(" Could not find res/textures/gun_pickup.png!");
         }
         try {
             shotgunPickupTexture = new Texture("res/textures/shotgun_pickup.png");
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/shotgun_pickup.png!");
+            System.out.println(" Could not find res/textures/shotgun_pickup.png!");
         }
         try {
             riflePickupTexture = new Texture("res/textures/rifle_pickup.png");
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/rifle_pickup.png!");
+            System.out.println(" Could not find res/textures/rifle_pickup.png!");
         }
         try {
             healthPickupTexture = new Texture("res/textures/health_pickup.png");
         } catch (Exception e) {
-            System.out.println("⚠️ Could not find res/textures/health_pickup.png!");
+            System.out.println(" Could not find res/textures/health_pickup.png!");
         }
     }
 
